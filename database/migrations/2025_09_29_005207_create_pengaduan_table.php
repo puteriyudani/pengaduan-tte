@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('email');
             $table->foreignId('kategori_id')->constrained('kategori')->onDelete('cascade');
             $table->string('opd');
+            $table->string('keterangan');
             $table->date('tanggal')->default(DB::raw('CURRENT_DATE'));
             $table->string('hari')->default(DB::raw('DAYNAME(CURRENT_DATE)'));
             $table->timestamps();
