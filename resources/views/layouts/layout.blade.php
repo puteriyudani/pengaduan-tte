@@ -8,6 +8,8 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('img/icon.png') }}">
+
     <title>@yield('title')</title>
 
     <!-- Bootstrap 5 CSS -->
