@@ -29,29 +29,35 @@
                     <span>Dashboard</span></a>
             </li>
 
-            <!-- Divider -->
-            <hr class="sidebar-divider">
+            @if (Auth::user()->role === 'super_admin')
+                <!-- Divider -->
+                <hr class="sidebar-divider">
 
-            <!-- Heading -->
-            <div class="sidebar-heading">
-                Data
-            </div>
+                <!-- Heading -->
+                <div class="sidebar-heading">
+                    Data
+                </div>
 
-            <!-- Nav Item - Users -->
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <i class="fas fa-fw fa-user"></i>
-                    <span>Users</span></a>
-            </li>
+                <!-- Nav Item - Users -->
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-fw fa-user"></i>
+                        <span>Users</span></a>
+                </li>
 
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <i class="fas fa-fw fa-puzzle-piece"></i>
-                    <span>Category</span></a>
-            </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-fw fa-puzzle-piece"></i>
+                        <span>Category</span></a>
+                </li>
 
-            <!-- Divider -->
-            <hr class="sidebar-divider d-none d-md-block">
+                <!-- Divider -->
+                <hr class="sidebar-divider d-none d-md-block">
+            @endif
+
+            @if (Auth::user()->role === 'admin')
+
+            @endif
 
             <!-- Sidebar Toggler (Sidebar) -->
             <div class="text-center d-none d-md-inline">
