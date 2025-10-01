@@ -103,7 +103,7 @@
                         aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="#" method="POST">
+                    <form action="{{ route('pengaduan.store') }}" method="POST">
                         @csrf
                         <div class="mb-3">
                             <label for="nama" class="form-label">Nama (sesuai KTP)</label>
@@ -121,9 +121,9 @@
                             <label for="kategori_id" class="form-label">Kategori Permasalahan</label>
                             <select name="kategori_id" id="kategori_id" class="form-select" required>
                                 <option value="">-- Pilih Kategori --</option>
-                                {{-- @foreach ($kategori as $item)
+                                @foreach ($kategori as $item)
                                     <option value="{{ $item->id }}">{{ $item->nama_kategori }}</option>
-                                @endforeach --}}
+                                @endforeach
                             </select>
                         </div>
 
