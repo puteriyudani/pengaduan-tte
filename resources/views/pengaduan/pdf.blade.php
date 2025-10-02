@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Laporan Data Pengaduan</title>
+    <title>Laporan Data Pengaduan TTE</title>
     <style>
         body {
             font-family: DejaVu Sans, sans-serif;
@@ -89,7 +89,7 @@
 </head>
 
 <body>
-    <h2>Laporan Data Pengaduan</h2>
+    <h2>Laporan Data Pengaduan Tanda Tangan Elektronik (TTE)</h2>
 
     @foreach ($pengaduanPerOpd as $opd => $dataOpd)
         <div class="{{ !$loop->first ? 'page-break' : '' }}">

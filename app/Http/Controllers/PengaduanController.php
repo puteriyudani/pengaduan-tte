@@ -62,6 +62,6 @@ class PengaduanController extends Controller
         $pengaduanPerOpd = $pengaduan->groupBy('opd');
 
         $pdf = Pdf::loadView('pengaduan.pdf', compact('pengaduanPerOpd'));
-        return $pdf->download('laporan-pengaduan.pdf');
+        return $pdf->download('laporan-pengaduan-tte.pdf');
     }
 }
