@@ -1,5 +1,5 @@
 @extends('layouts.layout')
-@section('title', 'Tambah Kategori')
+@section('title', 'Pengaduan')
 @section('styles')
     <style>
         .sidebar-brand img {
@@ -45,7 +45,7 @@
                         <span>Users</span></a>
                 </li>
 
-                <li class="nav-item active">
+                <li class="nav-item">
                     <a class="nav-link" href="{{ route('kategori.index') }}">
                         <i class="fas fa-fw fa-puzzle-piece"></i>
                         <span>Category</span></a>
@@ -56,6 +56,23 @@
             @endif
 
             @if (Auth::user()->role === 'admin')
+                <!-- Divider -->
+                <hr class="sidebar-divider">
+
+                <!-- Heading -->
+                <div class="sidebar-heading">
+                    Data
+                </div>
+
+                <!-- Nav Item -->
+                <li class="nav-item active">
+                    <a class="nav-link" href="{{ route('pengaduan.index') }}">
+                        <i class="fas fa-fw fa-user"></i>
+                        <span>Pengaduan</span></a>
+                </li>
+
+                <!-- Divider -->
+                <hr class="sidebar-divider d-none d-md-block">
             @endif
 
             <!-- Sidebar Toggler (Sidebar) -->
@@ -124,28 +141,107 @@
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
 
+                    @if ($message = Session::get('success'))
+                        <div class="alert alert-success alert-block">
+                            <button type="button" class="close" data-dismiss="alert">×</button>
+                            <strong>{{ $message }}</strong>
+                        </div>
+                    @elseif ($message = Session::get('error'))
+                        <div class="alert alert-danger alert-block">
+                            <button type="button" class="close" data-dismiss="alert">×</button>
+                            <strong>{{ $message }}</strong>
+                        </div>
+                    @endif
+
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Tambah Kategori</h1>
-                    <p class="mb-4">Silakan isi form untuk menambahkan kategori baru.</p>
+                    <h1 class="h3 mb-2 text-gray-800">Data Pengaduan</h1>
+                    <p class="mb-4">Daftar pengaduan TTE berdasarkan kategori permasalahan.</p>
 
+                    <!-- Pengaduan -->
                     <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Pengaduan</h6>
+                        </div>
+
                         <div class="card-body">
-                            <form action="{{ route('kategori.store') }}" method="POST">
-                                @csrf
-                                <div class="mb-3">
-                                    <label for="nama_kategori" class="form-label">Nama Kategori</label>
-                                    <input type="text" name="nama_kategori" id="nama_kategori"
-                                        class="form-control @error('nama_kategori') is-invalid @enderror"
-                                        value="{{ old('nama_kategori') }}" required>
+                            <!-- Filter Kategori -->
+                            <div class="mb-3">
+                                <a href="{{ route('pengaduan.index') }}"
+                                    class="btn btn-sm {{ !$kategoriId ? 'btn-primary' : 'btn-outline-primary' }}">
+                                    Semua
+                                </a>
+                                @foreach ($kategori as $item)
+                                    <a href="{{ route('pengaduan.index', ['kategori_id' => $item->id]) }}"
+                                        class="btn btn-sm {{ $kategoriId == $item->id ? 'btn-primary' : 'btn-outline-primary' }}">
+                                        {{ $item->nama_kategori }}
+                                    </a>
+                                @endforeach
+                            </div>
 
-                                    @error('nama_kategori')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <button type="submit" class="btn btn-primary">Simpan</button>
-                                <a href="{{ route('kategori.index') }}" class="btn btn-secondary">Batal</a>
-                            </form>
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Tanggal</th>
+                                            <th>Nama</th>
+                                            <th>Email</th>
+                                            <th>No. WhatsApp</th>
+                                            <th>OPD</th>
+                                            <th>Keterangan</th>
+                                            <th>Kategori</th>
+                                            <th>Status</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse($pengaduans as $index => $pengaduan)
+                                            <tr>
+                                                <td>{{ $index + 1 }}</td>
+                                                <td>{{ $pengaduan->created_at->format('d-m-Y H:i') }}</td>
+                                                <td>{{ $pengaduan->nama }}</td>
+                                                <td>{{ $pengaduan->email }}</td>
+                                                <td>{{ $pengaduan->whatsapp }}</td>
+                                                <td>{{ $pengaduan->opd }}</td>
+                                                <td>{{ $pengaduan->keterangan }}</td>
+                                                <td>
+                                                    <span class="badge bg-info text-dark">
+                                                        {{ $pengaduan->kategori->nama_kategori ?? '-' }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    @if ($pengaduan->status === 'selesai')
+                                                        <span class="badge bg-success">Selesai</span>
+                                                    @else
+                                                        <span class="badge bg-warning text-dark">Pending</span>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if ($pengaduan->status !== 'selesai')
+                                                        <form action="{{ route('pengaduan.selesai', $pengaduan->id) }}"
+                                                            method="POST" style="display:inline">
+                                                            @csrf
+                                                            @method('PATCH')
+                                                            <button type="submit" class="btn btn-sm btn-success"
+                                                                onclick="return confirm('Tandai pengaduan ini selesai?')">
+                                                                Selesai
+                                                            </button>
+                                                        </form>
+                                                    @else
+                                                        <span class="text-muted">Sudah selesai</span>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="7" class="text-center text-muted">
+                                                    Belum ada pengaduan yang masuk.
+                                                </td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>

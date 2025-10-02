@@ -9,11 +9,13 @@ class Pengaduan extends Model
 {
     use HasFactory;
 
-    protected $table = 'pengaduan'; // nama tabel
+    protected $table = 'pengaduan';
+    protected $guarded = [];
 
     protected $fillable = [
         'nama',
         'email',
+        'whatsapp',
         'kategori_id',
         'opd',
         'keterangan',

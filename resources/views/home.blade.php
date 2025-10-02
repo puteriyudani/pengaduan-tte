@@ -90,6 +90,12 @@
             <a href="#" class="btn-laporan" data-bs-toggle="modal" data-bs-target="#formLaporanModal">
                 Buat Laporan
             </a>
+            @if (session('success'))
+                <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            @endif
         </div>
     </div>
 
@@ -109,12 +115,27 @@
                             <label for="nama" class="form-label">Nama (sesuai KTP)</label>
                             <input type="text" name="nama" id="nama" class="form-control"
                                 placeholder="Masukkan nama lengkap" required>
+                            @error('nama')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="mb-3">
                             <label for="email" class="form-label">Email Dinas</label>
                             <input type="email" name="email" id="email" class="form-control"
                                 placeholder="nama@riau.go.id" required>
+                            @error('email')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="whatsapp" class="form-label">No. WhatsApp</label>
+                            <input type="text" name="whatsapp" id="whatsapp" class="form-control"
+                                placeholder="628xxxxxxxxxx" required>
+                            @error('whatsapp')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="mb-3">
@@ -125,17 +146,26 @@
                                     <option value="{{ $item->id }}">{{ $item->nama_kategori }}</option>
                                 @endforeach
                             </select>
+                            @error('kategori')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="mb-3">
                             <label for="opd" class="form-label">OPD</label>
                             <input type="text" name="opd" id="opd" class="form-control"
                                 placeholder="Instansi anda" required>
+                            @error('opd')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="mb-3">
                             <label for="keterangan" class="form-label">Keterangan</label>
-                            <textarea name="keterangan" id="keterangan" class="form-control" rows="4" placeholder="- jika tidak ada" required></textarea>
+                            <textarea name="keterangan" id="keterangan" class="form-control" rows="4" placeholder="Masukkan - jika tidak ada" required></textarea>
+                            @error('keterangan')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="d-grid">
@@ -146,4 +176,13 @@
             </div>
         </div>
     </div>
+
+    @if ($errors->any())
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                var formModal = new bootstrap.Modal(document.getElementById('formLaporanModal'));
+                formModal.show();
+            });
+        </script>
+    @endif
 @endsection
