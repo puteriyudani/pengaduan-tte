@@ -13,9 +13,11 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
-        // kasih default dulu biar aman
+        // default biar aman
         $jumlahSuperAdmin = $jumlahAdmin = $jumlahKategori = null;
         $totalPengaduan = $pendingPengaduan = $selesaiPengaduan = null;
+        $pengaduanPerBulan = [];
+        $pengaduanPerOpd = [];
 
         if ($user->role === 'super_admin') {
             $jumlahSuperAdmin = User::where('role', 'super_admin')->count();
@@ -27,6 +29,32 @@ class DashboardController extends Controller
             $totalPengaduan   = Pengaduan::count();
             $pendingPengaduan = Pengaduan::where('status', 'pending')->count();
             $selesaiPengaduan = Pengaduan::where('status', 'selesai')->count();
+
+            // Grafik per bulan
+            $pengaduanPerBulan = Pengaduan::selectRaw('MONTH(created_at) as bulan, COUNT(*) as total')
+                ->whereYear('created_at', date('Y'))
+                ->groupBy('bulan')
+                ->pluck('total', 'bulan')
+                ->toArray();
+
+            $allMonths = range(1, 12);
+            $pengaduanPerBulan = collect($allMonths)->mapWithKeys(function ($m) use ($pengaduanPerBulan) {
+                return [$m => $pengaduanPerBulan[$m] ?? 0];
+            })->toArray();
+
+            // Grafik per OPD
+            $pengaduanPerOpd = Pengaduan::selectRaw('opd, COUNT(*) as total')
+                ->groupBy('opd')
+                ->pluck('total', 'opd')
+                ->toArray();
+
+            // Grafik per Kategori (semua kategori, termasuk yang 0)
+            $kategoriList = Kategori::all();
+
+            $pengaduanPerKategori = $kategoriList->mapWithKeys(function ($kategori) {
+                $total = Pengaduan::where('kategori_id', $kategori->id)->count();
+                return [$kategori->nama_kategori => $total];
+            })->toArray();
         }
 
         return view('dashboard', compact(
@@ -35,7 +63,10 @@ class DashboardController extends Controller
             'jumlahKategori',
             'totalPengaduan',
             'pendingPengaduan',
-            'selesaiPengaduan'
+            'selesaiPengaduan',
+            'pengaduanPerBulan',
+            'pengaduanPerOpd',
+            'pengaduanPerKategori'
         ));
     }
 }

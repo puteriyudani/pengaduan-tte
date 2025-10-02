@@ -157,7 +157,8 @@
                                             <div class="col mr-2">
                                                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                                     Jumlah Super Admin</div>
-                                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $jumlahSuperAdmin ?? 0 }}
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                    {{ $jumlahSuperAdmin ?? 0 }}
                                                 </div>
                                             </div>
                                             <div class="col-auto">
@@ -195,7 +196,8 @@
                                             <div class="col mr-2">
                                                 <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
                                                     Jumlah Kategori</div>
-                                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $jumlahKategori ?? 0 }}
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                    {{ $jumlahKategori ?? 0 }}
                                                 </div>
                                             </div>
                                             <div class="col-auto">
@@ -216,7 +218,8 @@
                                             <div class="col mr-2">
                                                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                                     Total Pengaduan</div>
-                                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalPengaduan ?? 0 }}
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                    {{ $totalPengaduan ?? 0 }}
                                                 </div>
                                             </div>
                                             <div class="col-auto">
@@ -264,6 +267,137 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Grafik Pengaduan per Bulan -->
+                            @if ($pengaduanPerBulan)
+                                <div class="card mt-4">
+                                    <div class="card-header">
+                                        Grafik Pengaduan per Bulan ({{ date('Y') }})
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="chartPengaduan"></canvas>
+                                    </div>
+                                </div>
+
+                                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                                <script>
+                                    const ctx = document.getElementById('chartPengaduan');
+                                    new Chart(ctx, {
+                                        type: 'bar',
+                                        data: {
+                                            labels: [
+                                                'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun',
+                                                'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'
+                                            ],
+                                            datasets: [{
+                                                label: 'Jumlah Pengaduan',
+                                                data: @json(array_values($pengaduanPerBulan)),
+                                                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                                                borderColor: 'rgba(54, 162, 235, 1)',
+                                                borderWidth: 1
+                                            }]
+                                        },
+                                        options: {
+                                            responsive: true,
+                                            scales: {
+                                                y: {
+                                                    beginAtZero: true,
+                                                    precision: 0
+                                                }
+                                            }
+                                        }
+                                    });
+                                </script>
+                            @endif
+
+                            <!-- Grafik Pengaduan per OPD dan Kategori -->
+                            @if ($pengaduanPerOpd && $pengaduanPerKategori)
+                                <div class="card mt-4">
+                                    <div class="card-header">
+                                        Grafik Pengaduan
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <!-- Pie Chart OPD -->
+                                            <div class="col-md-6">
+                                                <h6 class="text-center">Per OPD</h6>
+                                                <canvas id="chartOpd" style="max-height:300px"></canvas>
+                                            </div>
+
+                                            <!-- Pie Chart Kategori -->
+                                            <div class="col-md-6">
+                                                <h6 class="text-center">Per Kategori</h6>
+                                                <canvas id="chartKategori" style="max-height:300px"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                                <script>
+                                    // Generate random colors
+                                    function generateColors(count) {
+                                        const colors = [];
+                                        for (let i = 0; i < count; i++) {
+                                            const r = Math.floor(Math.random() * 255);
+                                            const g = Math.floor(Math.random() * 255);
+                                            const b = Math.floor(Math.random() * 255);
+                                            colors.push(`rgba(${r}, ${g}, ${b}, 0.6)`);
+                                        }
+                                        return colors;
+                                    }
+
+                                    // Pie Chart Per OPD
+                                    const ctxOpd = document.getElementById('chartOpd');
+                                    new Chart(ctxOpd, {
+                                        type: 'pie',
+                                        data: {
+                                            labels: @json(array_keys($pengaduanPerOpd)),
+                                            datasets: [{
+                                                label: 'Jumlah Pengaduan',
+                                                data: @json(array_values($pengaduanPerOpd)),
+                                                backgroundColor: generateColors({{ count($pengaduanPerOpd) }}),
+                                                borderColor: '#fff',
+                                                borderWidth: 2
+                                            }]
+                                        },
+                                        options: {
+                                            responsive: true,
+                                            maintainAspectRatio: false,
+                                            plugins: {
+                                                legend: {
+                                                    position: 'bottom'
+                                                }
+                                            }
+                                        }
+                                    });
+
+                                    // Pie Chart Per Kategori
+                                    const ctxKategori = document.getElementById('chartKategori');
+                                    new Chart(ctxKategori, {
+                                        type: 'pie',
+                                        data: {
+                                            labels: @json(array_keys($pengaduanPerKategori)),
+                                            datasets: [{
+                                                label: 'Jumlah Pengaduan',
+                                                data: @json(array_values($pengaduanPerKategori)),
+                                                backgroundColor: generateColors({{ count($pengaduanPerKategori) }}),
+                                                borderColor: '#fff',
+                                                borderWidth: 2
+                                            }]
+                                        },
+                                        options: {
+                                            responsive: true,
+                                            maintainAspectRatio: false,
+                                            plugins: {
+                                                legend: {
+                                                    position: 'bottom'
+                                                }
+                                            }
+                                        }
+                                    });
+                                </script>
+                            @endif
                         @endif
                     </div>
 

@@ -142,14 +142,14 @@
                 <div class="container-fluid">
 
                     @if ($message = Session::get('success'))
-                        <div class="alert alert-success alert-block">
-                            <button type="button" class="close" data-dismiss="alert">×</button>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
                             <strong>{{ $message }}</strong>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     @elseif ($message = Session::get('error'))
-                        <div class="alert alert-danger alert-block">
-                            <button type="button" class="close" data-dismiss="alert">×</button>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
                             <strong>{{ $message }}</strong>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     @endif
 
@@ -199,7 +199,7 @@
                                     </thead>
                                     <tbody>
                                         @forelse($pengaduans as $index => $pengaduan)
-                                            <tr>
+                                            <tr @if ($pengaduan->status === 'selesai') class="table-success" @endif>
                                                 <td>{{ $index + 1 }}</td>
                                                 <td>{{ $pengaduan->created_at->format('d-m-Y H:i') }}</td>
                                                 <td>{{ $pengaduan->nama }}</td>
@@ -237,7 +237,7 @@
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="7" class="text-center text-muted">
+                                                <td colspan="10" class="text-center text-muted">
                                                     Belum ada pengaduan yang masuk.
                                                 </td>
                                             </tr>
