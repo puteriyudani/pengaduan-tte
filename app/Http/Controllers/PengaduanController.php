@@ -2,19 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Kategori;
 use Illuminate\Http\Request;
 use App\Mail\PengaduanSelesaiMail;
+use App\Models\Kategori;
+use App\Models\Pengaduan;
 use Illuminate\Support\Facades\Mail;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PengaduanController extends Controller
 {
     public function index(Request $request)
     {
         $kategoriId = $request->get('kategori_id'); // ambil parameter dari URL
-        $kategori = \App\Models\Kategori::all();
+        $kategori = Kategori::all();
 
-        $pengaduans = \App\Models\Pengaduan::when($kategoriId, function ($query) use ($kategoriId) {
+        $pengaduans = Pengaduan::when($kategoriId, function ($query) use ($kategoriId) {
             $query->where('kategori_id', $kategoriId);
         })->latest()->get();
 
@@ -32,14 +34,14 @@ class PengaduanController extends Controller
             'keterangan'  => 'required|string',
         ]);
 
-        \App\Models\Pengaduan::create($validated);
+        Pengaduan::create($validated);
 
         return redirect('/')->with('success', 'Pengaduan berhasil dikirim.');
     }
 
     public function selesai($id)
     {
-        $pengaduan = \App\Models\Pengaduan::findOrFail($id);
+        $pengaduan = Pengaduan::findOrFail($id);
 
         // update status
         $pengaduan->status = 'selesai';
@@ -49,5 +51,17 @@ class PengaduanController extends Controller
         Mail::to($pengaduan->email)->send(new PengaduanSelesaiMail($pengaduan));
 
         return redirect()->route('pengaduan.index')->with('success', 'Pengaduan berhasil ditandai selesai dan notifikasi dikirim.');
+    }
+
+    public function exportPdf()
+    {
+        // ambil semua pengaduan dengan relasi kategori
+        $pengaduan = Pengaduan::with('kategori')->get();
+
+        // group by kolom opd langsung
+        $pengaduanPerOpd = $pengaduan->groupBy('opd');
+
+        $pdf = Pdf::loadView('pengaduan.pdf', compact('pengaduanPerOpd'));
+        return $pdf->download('laporan-pengaduan.pdf');
     }
 }
