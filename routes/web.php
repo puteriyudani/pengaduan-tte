@@ -5,6 +5,7 @@ use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\PengaduanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\UserController;
 use App\Models\Kategori;
 use Illuminate\Support\Facades\Route;
 
@@ -28,6 +29,7 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth', 'role:super_admin'])->group(function () {
     Route::resource('kategori', KategoriController::class);
+    Route::resource('user', UserController::class);
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {

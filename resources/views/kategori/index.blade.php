@@ -38,9 +38,9 @@
                     Data
                 </div>
 
-                <!-- Nav Item - Users -->
+                <!-- Nav Item -->
                 <li class="nav-item">
-                    <a class="nav-link" href="#">
+                    <a class="nav-link" href="{{ route('user.index') }}">
                         <i class="fas fa-fw fa-user"></i>
                         <span>Users</span></a>
                 </li>
@@ -56,6 +56,23 @@
             @endif
 
             @if (Auth::user()->role === 'admin')
+                <!-- Divider -->
+                <hr class="sidebar-divider">
+
+                <!-- Heading -->
+                <div class="sidebar-heading">
+                    Data
+                </div>
+
+                <!-- Nav Item -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('pengaduan.index') }}">
+                        <i class="fas fa-fw fa-user"></i>
+                        <span>Pengaduan</span></a>
+                </li>
+
+                <!-- Divider -->
+                <hr class="sidebar-divider d-none d-md-block">
             @endif
 
             <!-- Sidebar Toggler (Sidebar) -->

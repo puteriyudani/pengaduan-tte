@@ -18,6 +18,7 @@ class DashboardController extends Controller
         $totalPengaduan = $pendingPengaduan = $selesaiPengaduan = null;
         $pengaduanPerBulan = [];
         $pengaduanPerOpd = [];
+        $pengaduanPerKategori = [];
 
         if ($user->role === 'super_admin') {
             $jumlahSuperAdmin = User::where('role', 'super_admin')->count();

@@ -1,5 +1,5 @@
 @extends('layouts.layout')
-@section('title', 'Edit Kategori')
+@section('title', 'User')
 @section('styles')
     <style>
         .sidebar-brand img {
@@ -39,13 +39,13 @@
                 </div>
 
                 <!-- Nav Item -->
-                <li class="nav-item">
+                <li class="nav-item active">
                     <a class="nav-link" href="{{ route('user.index') }}">
                         <i class="fas fa-fw fa-user"></i>
                         <span>Users</span></a>
                 </li>
 
-                <li class="nav-item active">
+                <li class="nav-item">
                     <a class="nav-link" href="{{ route('kategori.index') }}">
                         <i class="fas fa-fw fa-puzzle-piece"></i>
                         <span>Category</span></a>
@@ -140,32 +140,71 @@
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
+                    @if ($message = Session::get('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <strong>{{ $message }}</strong>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @elseif ($message = Session::get('error'))
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>{{ $message }}</strong>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Edit Kategori</h1>
-                    <p class="mb-4">Ubah data kategori sesuai kebutuhan.</p>
+                    <h1 class="h3 mb-2 text-gray-800">User</h1>
+                    <p class="mb-4">Kelola akun user.</p>
 
+                    <!-- User -->
                     <div class="card shadow mb-4">
+                        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                            <h6 class="m-0 font-weight-bold text-primary">User</h6>
+                            <a href="{{ route('user.create') }}" class="btn btn-sm btn-primary">
+                                <i class="fas fa-plus"></i> Tambah User
+                            </a>
+                        </div>
+
                         <div class="card-body">
-                            <form action="{{ route('kategori.update', $kategori->id) }}" method="POST">
-                                @csrf
-                                @method('PUT')
-                                <div class="mb-3">
-                                    <label for="nama_kategori" class="form-label">Nama Kategori</label>
-                                    <input type="text" name="nama_kategori" id="nama_kategori"
-                                        class="form-control @error('nama_kategori') is-invalid @enderror"
-                                        value="{{ old('nama_kategori', $kategori->nama_kategori) }}" required>
-
-                                    @error('nama_kategori')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <button type="submit" class="btn btn-primary">Update</button>
-                                <a href="{{ route('kategori.index') }}" class="btn btn-secondary">Batal</a>
-                            </form>
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>No.</th>
+                                            <th>Nama</th>
+                                            <th>Email</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse($users as $index => $user)
+                                            <tr>
+                                                <td>{{ $index + 1 }}</td>
+                                                <td>{{ $user->name }}</td>
+                                                <td>{{ $user->email }}</td>
+                                                <td>
+                                                    <form action="{{ route('user.destroy', $user->id) }}" method="POST"
+                                                        style="display:inline;">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-sm btn-danger"
+                                                            onclick="return confirm('Yakin mau hapus?')">Hapus</button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="3" class="text-center text-muted">
+                                                    Belum ada user yang ditambahkan.
+                                                </td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
+
                 </div>
                 <!-- /.container-fluid -->
 
