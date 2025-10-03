@@ -162,7 +162,7 @@
 
                         <div class="mb-3">
                             <label for="keterangan" class="form-label">Keterangan</label>
-                            <textarea name="keterangan" id="keterangan" class="form-control" rows="4" placeholder="Masukkan - jika tidak ada" required></textarea>
+                            <textarea name="keterangan" id="keterangan" class="form-control" rows="4" placeholder="Diisi jika perlu menjelaskan kendala" required></textarea>
                             @error('keterangan')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
