@@ -12,4 +12,17 @@ class UserController extends Controller
         $users = User::all();
         return view('user.index', compact('users'));
     }
+
+    public function destroy($id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return redirect()->route('users.index')->with('error', 'User tidak ditemukan.');
+        }
+
+        $user->delete();
+
+        return redirect()->route('user.index')->with('success', 'User berhasil dihapus.');
+    }
 }

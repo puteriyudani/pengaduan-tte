@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\PengaduanController;
@@ -30,6 +31,11 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'role:super_admin'])->group(function () {
     Route::resource('kategori', KategoriController::class);
     Route::resource('user', UserController::class);
+
+    Route::get('superadmin/users/create', [RegisteredUserController::class, 'createForSuperAdmin'])
+        ->name('superadmin.users.create');
+    Route::post('superadmin/users', [RegisteredUserController::class, 'storeForSuperAdmin'])
+        ->name('superadmin.users.store');
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {

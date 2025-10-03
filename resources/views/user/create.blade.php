@@ -1,5 +1,5 @@
 @extends('layouts.layout')
-@section('title', 'Edit Kategori')
+@section('title', 'Tambah Kategori')
 @section('styles')
     <style>
         .sidebar-brand img {
@@ -39,13 +39,13 @@
                 </div>
 
                 <!-- Nav Item -->
-                <li class="nav-item">
+                <li class="nav-item active">
                     <a class="nav-link" href="{{ route('user.index') }}">
                         <i class="fas fa-fw fa-user"></i>
                         <span>Users</span></a>
                 </li>
 
-                <li class="nav-item active">
+                <li class="nav-item">
                     <a class="nav-link" href="{{ route('kategori.index') }}">
                         <i class="fas fa-fw fa-puzzle-piece"></i>
                         <span>Category</span></a>
@@ -142,8 +142,8 @@
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Edit Kategori</h1>
-                    <p class="mb-4">Ubah data kategori sesuai kebutuhan.</p>
+                    <h1 class="h3 mb-2 text-gray-800">Tambah User</h1>
+                    <p class="mb-4">Silakan isi form untuk menambahkan user baru.</p>
 
                     <div class="card shadow mb-4">
                         <div class="card-body">
@@ -156,21 +156,81 @@
                                     </ul>
                                 </div>
                             @endif
-                            <form action="{{ route('kategori.update', $kategori->id) }}" method="POST">
+                            <form action="{{ route('superadmin.users.store') }}" method="POST">
                                 @csrf
-                                @method('PUT')
                                 <div class="mb-3">
-                                    <label for="nama_kategori" class="form-label">Nama Kategori</label>
-                                    <input type="text" name="nama_kategori" id="nama_kategori"
-                                        class="form-control @error('nama_kategori') is-invalid @enderror"
-                                        value="{{ old('nama_kategori', $kategori->nama_kategori) }}" required>
+                                    <label for="name" class="form-label">Nama</label>
+                                    <input type="text" name="name" id="name"
+                                        class="form-control @error('name') is-invalid @enderror"
+                                        value="{{ old('name') }}" required>
 
-                                    @error('nama_kategori')
+                                    @error('name')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
 
-                                <button type="submit" class="btn btn-primary">Update</button>
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" name="email" id="email"
+                                        class="form-control @error('email') is-invalid @enderror"
+                                        value="{{ old('email') }}" required>
+
+                                    @error('email')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="mb-3 position-relative">
+                                    <label for="password" class="form-label">Password</label>
+                                    <div class="input-group">
+                                        <input type="password" name="password" id="password" class="form-control"
+                                            required>
+                                        <button type="button" class="btn btn-outline-secondary toggle-password"
+                                            data-target="password">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+
+                                    <small id="passwordHelp" class="form-text">
+                                        Password minimal 8 karakter, mengandung huruf besar, huruf kecil, angka, dan simbol.
+                                    </small>
+
+                                    <div class="valid-feedback">✔ Password sesuai</div>
+                                    <div class="invalid-feedback">❌ Password tidak memenuhi syarat</div>
+                                </div>
+
+                                <div class="mb-3 position-relative">
+                                    <label for="password_confirmation" class="form-label">Konfirmasi Password</label>
+                                    <div class="input-group">
+                                        <input type="password" name="password_confirmation" id="password_confirmation"
+                                            class="form-control" required>
+                                        <button type="button" class="btn btn-outline-secondary toggle-password"
+                                            data-target="password_confirmation">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+
+                                    <small id="confirmHelp" class="form-text">
+                                        Konfirmasi password harus sama dengan password.
+                                    </small>
+
+                                    <div class="valid-feedback">✔ Konfirmasi password sesuai</div>
+                                    <div class="invalid-feedback">❌ Konfirmasi password tidak cocok</div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="role" class="form-label">Role</label>
+                                    <select id="role" name="role" class="form-control" required>
+                                        <option value="admin">Admin</option>
+                                        <option value="super_admin">Super Admin</option>
+                                    </select>
+
+                                    @error('role')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">Simpan</button>
                                 <a href="{{ route('kategori.index') }}" class="btn btn-secondary">Batal</a>
                             </form>
                         </div>
@@ -246,6 +306,81 @@
             if (sidebarToggleTop) {
                 sidebarToggleTop.addEventListener("click", toggleSidebar);
             }
+        });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const password = document.getElementById("password");
+            const confirmPassword = document.getElementById("password_confirmation");
+            const passwordHelp = document.getElementById("passwordHelp");
+            const confirmHelp = document.getElementById("confirmHelp");
+
+            function validatePassword() {
+                const value = password.value;
+
+                // regex: minimal 8 karakter, huruf besar, kecil, angka, simbol
+                const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+
+                if (regex.test(value)) {
+                    password.classList.remove("is-invalid");
+                    password.classList.add("is-valid");
+                    passwordHelp.classList.remove("text-danger");
+                    passwordHelp.classList.add("text-success");
+                } else {
+                    password.classList.remove("is-valid");
+                    password.classList.add("is-invalid");
+                    passwordHelp.classList.remove("text-success");
+                    passwordHelp.classList.add("text-danger");
+                }
+                validateConfirmPassword(); // check ulang confirm kalau password berubah
+            }
+
+            function validateConfirmPassword() {
+                if (confirmPassword.value === "") {
+                    confirmPassword.classList.remove("is-valid", "is-invalid");
+                    confirmHelp.classList.remove("text-danger", "text-success");
+                    return;
+                }
+
+                if (confirmPassword.value === password.value) {
+                    confirmPassword.classList.remove("is-invalid");
+                    confirmPassword.classList.add("is-valid");
+                    confirmHelp.classList.remove("text-danger");
+                    confirmHelp.classList.add("text-success");
+                } else {
+                    confirmPassword.classList.remove("is-valid");
+                    confirmPassword.classList.add("is-invalid");
+                    confirmHelp.classList.remove("text-success");
+                    confirmHelp.classList.add("text-danger");
+                }
+            }
+
+            password.addEventListener("input", validatePassword);
+            confirmPassword.addEventListener("input", validateConfirmPassword);
+        });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // toggle show/hide password
+            document.querySelectorAll(".toggle-password").forEach(function(btn) {
+                btn.addEventListener("click", function() {
+                    const targetId = this.getAttribute("data-target");
+                    const input = document.getElementById(targetId);
+                    const icon = this.querySelector("i");
+
+                    if (input.type === "password") {
+                        input.type = "text";
+                        icon.classList.remove("fa-eye");
+                        icon.classList.add("fa-eye-slash");
+                    } else {
+                        input.type = "password";
+                        icon.classList.remove("fa-eye-slash");
+                        icon.classList.add("fa-eye");
+                    }
+                });
+            });
         });
     </script>
 @endsection

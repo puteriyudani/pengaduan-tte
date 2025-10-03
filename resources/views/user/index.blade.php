@@ -160,7 +160,7 @@
                     <div class="card shadow mb-4">
                         <div class="card-header py-3 d-flex justify-content-between align-items-center">
                             <h6 class="m-0 font-weight-bold text-primary">User</h6>
-                            <a href="{{ route('user.create') }}" class="btn btn-sm btn-primary">
+                            <a href="{{ route('superadmin.users.create') }}" class="btn btn-sm btn-primary">
                                 <i class="fas fa-plus"></i> Tambah User
                             </a>
                         </div>

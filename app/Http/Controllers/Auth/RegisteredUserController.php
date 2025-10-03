@@ -31,7 +31,7 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
@@ -46,5 +46,38 @@ class RegisteredUserController extends Controller
         Auth::login($user);
 
         return redirect(route('dashboard', absolute: false));
+    }
+
+    public function createForSuperAdmin(): View
+    {
+        return view('user.create');
+    }
+
+    public function storeForSuperAdmin(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
+            'password' => [
+                'required',
+                'confirmed',
+                Rules\Password::min(8) // minimal 8 karakter
+                    ->letters()        // wajib ada huruf
+                    ->mixedCase()      // wajib ada huruf besar & kecil
+                    ->numbers()        // wajib ada angka
+                    ->symbols(),       // wajib ada simbol
+            ],
+            'role' => ['required', 'in:admin,super_admin'],
+        ]);
+
+
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => $request->role,
+        ]);
+
+        return redirect()->route('user.index')->with('success', 'User berhasil dibuat!');
     }
 }
