@@ -43,9 +43,11 @@ class PengaduanController extends Controller
     {
         $pengaduan = Pengaduan::findOrFail($id);
 
-        // update status
-        $pengaduan->status = 'selesai';
-        $pengaduan->save();
+        // update status dan tanggal selesai
+        $pengaduan->update([
+            'status' => 'selesai',
+            'tanggal_selesai' => now()->toDateString(), // otomatis isi tanggal hari ini (YYYY-MM-DD)
+        ]);
 
         // kirim email
         Mail::to($pengaduan->email)->send(new PengaduanSelesaiMail($pengaduan));

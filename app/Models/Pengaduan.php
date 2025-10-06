@@ -10,7 +10,6 @@ class Pengaduan extends Model
     use HasFactory;
 
     protected $table = 'pengaduan';
-    protected $guarded = [];
 
     protected $fillable = [
         'nama',
@@ -20,7 +19,9 @@ class Pengaduan extends Model
         'opd',
         'keterangan',
         'tanggal',
+        'tanggal_selesai',
         'hari',
+        'status',
     ];
 
     /**
