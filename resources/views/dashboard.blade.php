@@ -1,5 +1,5 @@
 @extends('layouts.layout')
-@section('title', 'Pengaduan TTE')
+@section('title', 'Dashboard')
 @section('styles')
     <style>
         .sidebar-brand img {
@@ -49,6 +49,12 @@
                     <a class="nav-link" href="{{ route('kategori.index') }}">
                         <i class="fas fa-fw fa-puzzle-piece"></i>
                         <span>Category</span></a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('opd.index') }}">
+                        <i class="fas fa-fw fa-university"></i>
+                        <span>OPD</span></a>
                 </li>
 
                 <!-- Divider -->

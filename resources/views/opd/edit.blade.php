@@ -1,5 +1,5 @@
 @extends('layouts.layout')
-@section('title', 'Kategori')
+@section('title', 'Edit OPD')
 @section('styles')
     <style>
         .sidebar-brand img {
@@ -45,13 +45,13 @@
                         <span>Users</span></a>
                 </li>
 
-                <li class="nav-item active">
+                <li class="nav-item">
                     <a class="nav-link" href="{{ route('kategori.index') }}">
                         <i class="fas fa-fw fa-puzzle-piece"></i>
                         <span>Category</span></a>
                 </li>
 
-                <li class="nav-item">
+                <li class="nav-item active">
                     <a class="nav-link" href="{{ route('opd.index') }}">
                         <i class="fas fa-fw fa-university"></i>
                         <span>OPD</span></a>
@@ -146,71 +146,41 @@
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
-                    @if ($message = Session::get('success'))
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <strong>{{ $message }}</strong>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    @elseif ($message = Session::get('error'))
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <strong>{{ $message }}</strong>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    @endif
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Kategori</h1>
-                    <p class="mb-4">Kategori adalah permasalahan yang terjadi terkait TTE.</p>
+                    <h1 class="h3 mb-2 text-gray-800">Edit OPD</h1>
+                    <p class="mb-4">Ubah data opd sesuai kebutuhan.</p>
 
-                    <!-- Kategori -->
                     <div class="card shadow mb-4">
-                        <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                            <h6 class="m-0 font-weight-bold text-primary">Kategori</h6>
-                            <a href="{{ route('kategori.create') }}" class="btn btn-sm btn-primary">
-                                <i class="fas fa-plus"></i> Tambah Kategori
-                            </a>
-                        </div>
-
                         <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                    <thead>
-                                        <tr>
-                                            <th>No.</th>
-                                            <th>Nama Kategori</th>
-                                            <th>Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @forelse($kategoris as $index => $kategori)
-                                            <tr>
-                                                <td>{{ $index + 1 }}</td>
-                                                <td>{{ $kategori->nama_kategori }}</td>
-                                                <td>
-                                                    <a href="{{ route('kategori.edit', $kategori->id) }}"
-                                                        class="btn btn-sm btn-warning">Edit</a>
-                                                    <form action="{{ route('kategori.destroy', $kategori->id) }}"
-                                                        method="POST" style="display:inline;">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-sm btn-danger"
-                                                            onclick="return confirm('Yakin mau hapus?')">Hapus</button>
-                                                    </form>
-                                                </td>
-                                            </tr>
-                                        @empty
-                                            <tr>
-                                                <td colspan="3" class="text-center text-muted">
-                                                    Belum ada kategori yang ditambahkan.
-                                                </td>
-                                            </tr>
-                                        @endforelse
-                                    </tbody>
-                                </table>
-                            </div>
+                            @if ($errors->any())
+                                <div class="alert alert-danger">
+                                    <ul class="mb-0">
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
+                            <form action="{{ route('opd.update', $opd->id) }}" method="POST">
+                                @csrf
+                                @method('PUT')
+                                <div class="mb-3">
+                                    <label for="nama_opd" class="form-label">Nama OPD</label>
+                                    <input type="text" name="nama_opd" id="nama_opd"
+                                        class="form-control @error('nama_opd') is-invalid @enderror"
+                                        value="{{ old('nama_opd', $opd->nama_opd) }}" required>
+
+                                    @error('nama_opd')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">Update</button>
+                                <a href="{{ route('opd.index') }}" class="btn btn-secondary">Batal</a>
+                            </form>
                         </div>
                     </div>
-
                 </div>
                 <!-- /.container-fluid -->
 

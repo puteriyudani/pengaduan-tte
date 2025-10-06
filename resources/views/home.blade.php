@@ -145,24 +145,37 @@
                                 @foreach ($kategori as $item)
                                     <option value="{{ $item->id }}">{{ $item->nama_kategori }}</option>
                                 @endforeach
+                                <option value="lainnya">Lainnya</option>
                             </select>
-                            @error('kategori')
+                            @error('kategori_id')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
+                        <!-- Input manual jika pilih "Lainnya" -->
+                        <div class="mb-3 d-none" id="kategori_lainnya_wrapper">
+                            <label for="kategori_lainnya" class="form-label">Tulis Kategori Lainnya</label>
+                            <input type="text" name="kategori_lainnya" id="kategori_lainnya" class="form-control"
+                                placeholder="Masukkan kategori permasalahan lain">
+                        </div>
+
                         <div class="mb-3">
-                            <label for="opd" class="form-label">OPD</label>
-                            <input type="text" name="opd" id="opd" class="form-control"
-                                placeholder="Instansi anda" required>
-                            @error('opd')
+                            <label for="opd_id" class="form-label">OPD</label>
+                            <select name="opd_id" id="opd_id" class="form-select" required>
+                                <option value="">-- Pilih OPD --</option>
+                                @foreach ($opd as $item)
+                                    <option value="{{ $item->id }}">{{ $item->nama_opd }}</option>
+                                @endforeach
+                            </select>
+                            @error('opd_id')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
                         <div class="mb-3">
                             <label for="keterangan" class="form-label">Keterangan</label>
-                            <textarea name="keterangan" id="keterangan" class="form-control" rows="4" placeholder="Diisi jika perlu menjelaskan kendala" required></textarea>
+                            <textarea name="keterangan" id="keterangan" class="form-control" rows="4"
+                                placeholder="Diisi jika perlu menjelaskan kendala" required></textarea>
                             @error('keterangan')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -185,4 +198,25 @@
             });
         </script>
     @endif
+@endsection
+
+@section('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const selectKategori = document.getElementById('kategori_id');
+            const inputLainnyaWrapper = document.getElementById('kategori_lainnya_wrapper');
+            const inputLainnya = document.getElementById('kategori_lainnya');
+
+            selectKategori.addEventListener('change', function() {
+                if (this.value === 'lainnya') {
+                    inputLainnyaWrapper.classList.remove('d-none');
+                    inputLainnya.required = true;
+                } else {
+                    inputLainnyaWrapper.classList.add('d-none');
+                    inputLainnya.required = false;
+                    inputLainnya.value = '';
+                }
+            });
+        });
+    </script>
 @endsection

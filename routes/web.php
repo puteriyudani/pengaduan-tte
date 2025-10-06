@@ -3,16 +3,19 @@
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\OpdController;
 use App\Http\Controllers\PengaduanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\UserController;
 use App\Models\Kategori;
+use App\Models\OPD;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     $kategori = Kategori::all();
-    return view('home', compact('kategori'));
+    $opd = OPD::all();
+    return view('home', compact('kategori', 'opd'));
 });
 
 Route::post('pengaduan', [PengaduanController::class, 'store'])->name('pengaduan.store');
@@ -31,6 +34,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'role:super_admin'])->group(function () {
     Route::resource('kategori', KategoriController::class);
     Route::resource('user', UserController::class);
+    Route::resource('opd', OpdController::class);
 
     Route::get('superadmin/users/create', [RegisteredUserController::class, 'createForSuperAdmin'])
         ->name('superadmin.users.create');

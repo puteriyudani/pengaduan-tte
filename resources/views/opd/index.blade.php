@@ -1,5 +1,5 @@
 @extends('layouts.layout')
-@section('title', 'Kategori')
+@section('title', 'OPD')
 @section('styles')
     <style>
         .sidebar-brand img {
@@ -45,13 +45,13 @@
                         <span>Users</span></a>
                 </li>
 
-                <li class="nav-item active">
+                <li class="nav-item">
                     <a class="nav-link" href="{{ route('kategori.index') }}">
                         <i class="fas fa-fw fa-puzzle-piece"></i>
                         <span>Category</span></a>
                 </li>
 
-                <li class="nav-item">
+                <li class="nav-item active">
                     <a class="nav-link" href="{{ route('opd.index') }}">
                         <i class="fas fa-fw fa-university"></i>
                         <span>OPD</span></a>
@@ -159,15 +159,15 @@
                     @endif
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Kategori</h1>
-                    <p class="mb-4">Kategori adalah permasalahan yang terjadi terkait TTE.</p>
+                    <h1 class="h3 mb-2 text-gray-800">OPD</h1>
+                    <p class="mb-4">OPD adalah permasalahan yang terjadi terkait TTE.</p>
 
-                    <!-- Kategori -->
+                    <!-- OPD -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                            <h6 class="m-0 font-weight-bold text-primary">Kategori</h6>
-                            <a href="{{ route('kategori.create') }}" class="btn btn-sm btn-primary">
-                                <i class="fas fa-plus"></i> Tambah Kategori
+                            <h6 class="m-0 font-weight-bold text-primary">OPD</h6>
+                            <a href="{{ route('opd.create') }}" class="btn btn-sm btn-primary">
+                                <i class="fas fa-plus"></i> Tambah OPD
                             </a>
                         </div>
 
@@ -177,19 +177,19 @@
                                     <thead>
                                         <tr>
                                             <th>No.</th>
-                                            <th>Nama Kategori</th>
+                                            <th>Nama OPD</th>
                                             <th>Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @forelse($kategoris as $index => $kategori)
+                                        @forelse($opds as $index => $opd)
                                             <tr>
                                                 <td>{{ $index + 1 }}</td>
-                                                <td>{{ $kategori->nama_kategori }}</td>
+                                                <td>{{ $opd->nama_opd }}</td>
                                                 <td>
-                                                    <a href="{{ route('kategori.edit', $kategori->id) }}"
+                                                    <a href="{{ route('opd.edit', $opd->id) }}"
                                                         class="btn btn-sm btn-warning">Edit</a>
-                                                    <form action="{{ route('kategori.destroy', $kategori->id) }}"
+                                                    <form action="{{ route('opd.destroy', $opd->id) }}"
                                                         method="POST" style="display:inline;">
                                                         @csrf
                                                         @method('DELETE')
@@ -201,7 +201,7 @@
                                         @empty
                                             <tr>
                                                 <td colspan="3" class="text-center text-muted">
-                                                    Belum ada kategori yang ditambahkan.
+                                                    Belum ada opd yang ditambahkan.
                                                 </td>
                                             </tr>
                                         @endforelse
