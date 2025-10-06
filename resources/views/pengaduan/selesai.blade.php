@@ -85,9 +85,9 @@
                     </a>
                     <div id="collapsePengaduan" class="collapse" data-bs-parent="#accordionSidebar">
                         <div class="bg-white py-2 collapse-inner rounded">
-                            <a class="collapse-item active" href="{{ route('pengaduan.index') }}">Semua Pengaduan</a>
+                            <a class="collapse-item" href="{{ route('pengaduan.index') }}">Semua Pengaduan</a>
                             <a class="collapse-item" href="{{ route('pengaduan.pending') }}">Pending</a>
-                            <a class="collapse-item" href="{{ route('pengaduan.selesailist') }}">Selesai</a>
+                            <a class="collapse-item active" href="{{ route('pengaduan.selesailist') }}">Selesai</a>
                         </div>
                     </div>
                 </li>
@@ -175,8 +175,8 @@
                     @endif
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Data Pengaduan</h1>
-                    <p class="mb-4">Daftar pengaduan TTE berdasarkan kategori permasalahan.</p>
+                    <h1 class="h3 mb-2 text-gray-800">Data Pengaduan Selesai</h1>
+                    <p class="mb-4">Daftar pengaduan TTE yang masih berstatus selesai.</p>
 
                     <!-- Pengaduan -->
                     <div class="card shadow mb-4">
@@ -190,12 +190,12 @@
                         <div class="card-body">
                             <!-- Filter Kategori -->
                             <div class="mb-3">
-                                <a href="{{ route('pengaduan.index') }}"
+                                <a href="{{ route('pengaduan.selesailist') }}"
                                     class="btn btn-sm {{ !$kategoriId ? 'btn-primary' : 'btn-outline-primary' }}">
                                     Semua
                                 </a>
                                 @foreach ($kategori as $item)
-                                    <a href="{{ route('pengaduan.index', ['kategori_id' => $item->id]) }}"
+                                    <a href="{{ route('pengaduan.selesailist', ['kategori_id' => $item->id]) }}"
                                         class="btn btn-sm {{ $kategoriId == $item->id ? 'btn-primary' : 'btn-outline-primary' }}">
                                         {{ $item->nama_kategori }}
                                     </a>

@@ -45,6 +45,8 @@ Route::middleware(['auth', 'role:super_admin'])->group(function () {
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('pengaduan', [PengaduanController::class, 'index'])->name('pengaduan.index');
     Route::patch('pengaduan/{id}/selesai', [PengaduanController::class, 'selesai'])->name('pengaduan.selesai');
+    Route::get('/pengaduan/pending', [PengaduanController::class, 'pending'])->name('pengaduan.pending');
+    Route::get('/pengaduan/selesai', [PengaduanController::class, 'selesaiList'])->name('pengaduan.selesailist');
     Route::get('/pengaduan/pdf', [PengaduanController::class, 'exportPdf'])
         ->name('pengaduan.exportPdf');
 });

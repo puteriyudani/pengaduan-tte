@@ -5,6 +5,14 @@
         .sidebar-brand img {
             filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.7));
         }
+
+        .nav-link .fa-chevron-right {
+            transition: transform 0.3s ease;
+        }
+
+        .nav-link[aria-expanded="true"] .fa-chevron-right {
+            transform: rotate(90deg);
+        }
     </style>
 @endsection
 @section('content')
@@ -72,9 +80,22 @@
 
                 <!-- Nav Item -->
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('pengaduan.index') }}">
-                        <i class="fas fa-fw fa-user"></i>
-                        <span>Pengaduan</span></a>
+                    <a class="nav-link collapsed d-flex justify-content-between align-items-center" href="#"
+                        data-bs-toggle="collapse" data-bs-target="#collapsePengaduan" aria-expanded="false"
+                        aria-controls="collapsePengaduan">
+                        <div>
+                            <i class="fas fa-fw fa-bullhorn"></i>
+                            <span>Pengaduan</span>
+                        </div>
+                        <i class="fas fa-chevron-right transition"></i>
+                    </a>
+                    <div id="collapsePengaduan" class="collapse" data-bs-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <a class="collapse-item" href="{{ route('pengaduan.index') }}">Semua Pengaduan</a>
+                            <a class="collapse-item" href="#">Pending</a>
+                            <a class="collapse-item" href="#">Selesai</a>
+                        </div>
+                    </div>
                 </li>
 
                 <!-- Divider -->
@@ -183,7 +204,8 @@
                                             <div class="col mr-2">
                                                 <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                                     Jumlah Admin</div>
-                                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $jumlahAdmin ?? 0 }}
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                    {{ $jumlahAdmin ?? 0 }}
                                                 </div>
                                             </div>
                                             <div class="col-auto">

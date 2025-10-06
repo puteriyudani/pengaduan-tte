@@ -23,6 +23,36 @@ class PengaduanController extends Controller
         return view('pengaduan.index', compact('pengaduans', 'kategori', 'kategoriId'));
     }
 
+    public function pending(Request $request)
+    {
+        $kategoriId = $request->get('kategori_id');
+        $kategori = Kategori::all();
+
+        $pengaduans = Pengaduan::where('status', 'pending')
+            ->when($kategoriId, function ($query) use ($kategoriId) {
+                $query->where('kategori_id', $kategoriId);
+            })
+            ->latest()
+            ->get();
+
+        return view('pengaduan.pending', compact('pengaduans', 'kategori', 'kategoriId'));
+    }
+
+    public function selesaiList(Request $request)
+    {
+        $kategoriId = $request->get('kategori_id');
+        $kategori = Kategori::all();
+
+        $pengaduans = Pengaduan::where('status', 'selesai')
+            ->when($kategoriId, function ($query) use ($kategoriId) {
+                $query->where('kategori_id', $kategoriId);
+            })
+            ->latest()
+            ->get();
+
+        return view('pengaduan.selesai', compact('pengaduans', 'kategori', 'kategoriId'));
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
