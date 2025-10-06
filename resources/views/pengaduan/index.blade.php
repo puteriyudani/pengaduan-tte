@@ -59,6 +59,12 @@
                         <span>Category</span></a>
                 </li>
 
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('opd.index') }}">
+                        <i class="fas fa-fw fa-university"></i>
+                        <span>OPD</span></a>
+                </li>
+
                 <!-- Divider -->
                 <hr class="sidebar-divider d-none d-md-block">
             @endif

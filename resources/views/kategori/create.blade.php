@@ -72,9 +72,22 @@
 
                 <!-- Nav Item -->
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('pengaduan.index') }}">
-                        <i class="fas fa-fw fa-user"></i>
-                        <span>Pengaduan</span></a>
+                    <a class="nav-link collapsed d-flex justify-content-between align-items-center" href="#"
+                        data-bs-toggle="collapse" data-bs-target="#collapsePengaduan" aria-expanded="false"
+                        aria-controls="collapsePengaduan">
+                        <div>
+                            <i class="fas fa-fw fa-bullhorn"></i>
+                            <span>Pengaduan</span>
+                        </div>
+                        <i class="fas fa-chevron-right transition"></i>
+                    </a>
+                    <div id="collapsePengaduan" class="collapse" data-bs-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <a class="collapse-item" href="{{ route('pengaduan.index') }}">Semua Pengaduan</a>
+                            <a class="collapse-item" href="{{ route('pengaduan.pending') }}">Pending</a>
+                            <a class="collapse-item" href="{{ route('pengaduan.selesailist') }}">Selesai</a>
+                        </div>
+                    </div>
                 </li>
 
                 <!-- Divider -->

@@ -92,8 +92,8 @@
                     <div id="collapsePengaduan" class="collapse" data-bs-parent="#accordionSidebar">
                         <div class="bg-white py-2 collapse-inner rounded">
                             <a class="collapse-item" href="{{ route('pengaduan.index') }}">Semua Pengaduan</a>
-                            <a class="collapse-item" href="#">Pending</a>
-                            <a class="collapse-item" href="#">Selesai</a>
+                            <a class="collapse-item" href="{{ route('pengaduan.pending') }}">Pending</a>
+                            <a class="collapse-item" href="{{ route('pengaduan.selesailist') }}">Selesai</a>
                         </div>
                     </div>
                 </li>
