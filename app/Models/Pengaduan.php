@@ -24,6 +24,11 @@ class Pengaduan extends Model
         'status',
     ];
 
+    protected $casts = [
+        'tanggal' => 'datetime',
+        'tanggal_selesai' => 'datetime',
+    ];
+
     /**
      * Relasi ke tabel kategori
      */

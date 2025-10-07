@@ -58,9 +58,9 @@ class PengaduanController extends Controller
         $validated = $request->validate([
             'nama'        => 'required|string|max:255',
             'email'       => 'required|email|max:255',
-            'whatsapp'       => 'required|max:20',
+            'whatsapp'    => 'required|max:20',
             'kategori_id' => 'required|exists:kategori,id',
-            'opd'         => 'required|string|max:255',
+            'opd_id'      => 'required|exists:opds,id',
             'keterangan'  => 'required|string',
         ]);
 
@@ -76,7 +76,7 @@ class PengaduanController extends Controller
         // update status dan tanggal selesai
         $pengaduan->update([
             'status' => 'selesai',
-            'tanggal_selesai' => now()->toDateString(), // otomatis isi tanggal hari ini (YYYY-MM-DD)
+            'tanggal_selesai' => now()->format('Y-m-d H:i:s'),
         ]);
 
         // kirim email
@@ -87,11 +87,8 @@ class PengaduanController extends Controller
 
     public function exportPdf()
     {
-        // ambil semua pengaduan dengan relasi kategori
-        $pengaduan = Pengaduan::with('kategori')->get();
-
-        // group by kolom opd langsung
-        $pengaduanPerOpd = $pengaduan->groupBy('opd');
+        $pengaduan = Pengaduan::with(['kategori', 'opd'])->get();
+        $pengaduanPerOpd = $pengaduan->groupBy('opd_id');
 
         $pdf = Pdf::loadView('pengaduan.pdf', compact('pengaduanPerOpd'));
         return $pdf->download('laporan-pengaduan-tte.pdf');

@@ -213,7 +213,8 @@
                                     <thead class="table-light">
                                         <tr>
                                             <th>No</th>
-                                            <th>Tanggal</th>
+                                            <th>Tanggal Masuk</th>
+                                            <th>Tanggal Selesai</th>
                                             <th>Nama</th>
                                             <th>Email</th>
                                             <th>No. WhatsApp</th>
@@ -228,7 +229,10 @@
                                         @forelse($pengaduans as $index => $pengaduan)
                                             <tr @if ($pengaduan->status === 'selesai') class="table-success" @endif>
                                                 <td>{{ $pengaduans->firstItem() + $index }}</td>
-                                                <td>{{ $pengaduan->created_at->format('d-m-Y H:i') }}</td>
+                                                <td>{{ $pengaduan->created_at ? $pengaduan->created_at->format('d-m-Y H:i') : '-' }}
+                                                </td>
+                                                <td>{{ $pengaduan->tanggal_selesai ? $pengaduan->tanggal_selesai->format('d-m-Y H:i') : '-' }}
+                                                </td>
                                                 <td>{{ $pengaduan->nama }}</td>
                                                 <td>{{ $pengaduan->email }}</td>
                                                 <td>{{ $pengaduan->whatsapp }}</td>
