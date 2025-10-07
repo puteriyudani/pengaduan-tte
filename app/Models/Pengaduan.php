@@ -31,4 +31,9 @@ class Pengaduan extends Model
     {
         return $this->belongsTo(Kategori::class, 'kategori_id');
     }
+
+    public function opd()
+    {
+        return $this->belongsTo(OPD::class, 'opd_id');
+    }
 }

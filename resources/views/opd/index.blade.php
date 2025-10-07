@@ -197,13 +197,13 @@
                                     <tbody>
                                         @forelse($opds as $index => $opd)
                                             <tr>
-                                                <td>{{ $index + 1 }}</td>
+                                                <td>{{ $opds->firstItem() + $index }}</td>
                                                 <td>{{ $opd->nama_opd }}</td>
                                                 <td>
                                                     <a href="{{ route('opd.edit', $opd->id) }}"
                                                         class="btn btn-sm btn-warning">Edit</a>
-                                                    <form action="{{ route('opd.destroy', $opd->id) }}"
-                                                        method="POST" style="display:inline;">
+                                                    <form action="{{ route('opd.destroy', $opd->id) }}" method="POST"
+                                                        style="display:inline;">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="btn btn-sm btn-danger"
@@ -220,6 +220,9 @@
                                         @endforelse
                                     </tbody>
                                 </table>
+                                <div class="d-flex justify-content-end mt-3">
+                                    {{ $opds->links('pagination::bootstrap-5') }}
+                                </div>
                             </div>
                         </div>
                     </div>

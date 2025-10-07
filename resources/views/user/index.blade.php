@@ -192,15 +192,17 @@
                                             <th>No.</th>
                                             <th>Nama</th>
                                             <th>Email</th>
+                                            <th>Role</th>
                                             <th>Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @forelse($users as $index => $user)
                                             <tr>
-                                                <td>{{ $index + 1 }}</td>
+                                                <td>{{ $users->firstItem() + $index }}</td>
                                                 <td>{{ $user->name }}</td>
                                                 <td>{{ $user->email }}</td>
+                                                <td>{{ $user->role }}</td>
                                                 <td>
                                                     <form action="{{ route('user.destroy', $user->id) }}" method="POST"
                                                         style="display:inline;">
@@ -220,6 +222,9 @@
                                         @endforelse
                                     </tbody>
                                 </table>
+                                <div class="d-flex justify-content-end mt-3">
+                                    {{ $users->links('pagination::bootstrap-5') }}
+                                </div>
                             </div>
                         </div>
                     </div>

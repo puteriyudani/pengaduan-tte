@@ -18,7 +18,7 @@ class PengaduanController extends Controller
 
         $pengaduans = Pengaduan::when($kategoriId, function ($query) use ($kategoriId) {
             $query->where('kategori_id', $kategoriId);
-        })->latest()->get();
+        })->latest()->paginate(10);
 
         return view('pengaduan.index', compact('pengaduans', 'kategori', 'kategoriId'));
     }
@@ -33,7 +33,7 @@ class PengaduanController extends Controller
                 $query->where('kategori_id', $kategoriId);
             })
             ->latest()
-            ->get();
+            ->paginate(10);
 
         return view('pengaduan.pending', compact('pengaduans', 'kategori', 'kategoriId'));
     }
@@ -48,7 +48,7 @@ class PengaduanController extends Controller
                 $query->where('kategori_id', $kategoriId);
             })
             ->latest()
-            ->get();
+            ->paginate(10);
 
         return view('pengaduan.selesai', compact('pengaduans', 'kategori', 'kategoriId'));
     }

@@ -12,7 +12,7 @@ class OpdController extends Controller
      */
     public function index()
     {
-        $opds = OPD::all();
+        $opds = OPD::orderBy('nama_opd', 'asc')->paginate(10);
         return view('opd.index', compact('opds'));
     }
 
@@ -30,7 +30,7 @@ class OpdController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama_opd' => 'required|string|max:255|unique:opd,nama_opd',
+            'nama_opd' => 'required|string|max:255|unique:opds,nama_opd',
         ]);
 
         OPD::create([
@@ -57,7 +57,7 @@ class OpdController extends Controller
         $opd = OPD::findOrFail($id);
 
         $request->validate([
-            'nama_opd' => 'required|string|max:255|unique:opd,nama_opd,' . $opd->id,
+            'nama_opd' => 'required|string|max:255|unique:opds,nama_opd,' . $opd->id,
         ]);
 
         $opd->update([

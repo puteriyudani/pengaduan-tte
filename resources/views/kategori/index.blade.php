@@ -197,7 +197,7 @@
                                     <tbody>
                                         @forelse($kategoris as $index => $kategori)
                                             <tr>
-                                                <td>{{ $index + 1 }}</td>
+                                                <td>{{ $kategoris->firstItem() + $index }}</td>
                                                 <td>{{ $kategori->nama_kategori }}</td>
                                                 <td>
                                                     <a href="{{ route('kategori.edit', $kategori->id) }}"
@@ -220,6 +220,9 @@
                                         @endforelse
                                     </tbody>
                                 </table>
+                                <div class="d-flex justify-content-end mt-3">
+                                    {{ $kategoris->links('pagination::bootstrap-5') }}
+                                </div>
                             </div>
                         </div>
                     </div>

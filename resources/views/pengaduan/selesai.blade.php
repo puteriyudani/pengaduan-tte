@@ -227,7 +227,7 @@
                                     <tbody>
                                         @forelse($pengaduans as $index => $pengaduan)
                                             <tr @if ($pengaduan->status === 'selesai') class="table-success" @endif>
-                                                <td>{{ $index + 1 }}</td>
+                                                <td>{{ $pengaduans->firstItem() + $index }}</td>
                                                 <td>{{ $pengaduan->created_at->format('d-m-Y H:i') }}</td>
                                                 <td>{{ $pengaduan->nama }}</td>
                                                 <td>{{ $pengaduan->email }}</td>
@@ -271,6 +271,9 @@
                                         @endforelse
                                     </tbody>
                                 </table>
+                                <div class="d-flex justify-content-end mt-3">
+                                    {{ $pengaduans->links('pagination::bootstrap-5') }}
+                                </div>
                             </div>
                         </div>
                     </div>
