@@ -182,7 +182,7 @@
 
                     <!-- Page Heading -->
                     <h1 class="h3 mb-2 text-gray-800">Data Pengaduan Selesai</h1>
-                    <p class="mb-4">Daftar pengaduan TTE yang masih berstatus selesai.</p>
+                    <p class="mb-4">Daftar pengaduan TTE yang berstatus selesai.</p>
 
                     <!-- Pengaduan -->
                     <div class="card shadow mb-4">
