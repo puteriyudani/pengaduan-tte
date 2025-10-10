@@ -85,12 +85,19 @@ class PengaduanController extends Controller
         return redirect()->route('pengaduan.index')->with('success', 'Pengaduan berhasil ditandai selesai dan notifikasi dikirim.');
     }
 
-    public function exportPdf()
+    public function exportPdf(Request $request)
     {
-        $pengaduan = Pengaduan::with(['kategori', 'opd'])->get();
+        $status = $request->get('status');
+
+        $pengaduanQuery = Pengaduan::with(['kategori', 'opd']);
+        if ($status) {
+            $pengaduanQuery->where('status', $status);
+        }
+
+        $pengaduan = $pengaduanQuery->get();
         $pengaduanPerOpd = $pengaduan->groupBy('opd_id');
 
-        $pdf = Pdf::loadView('pengaduan.pdf', compact('pengaduanPerOpd'));
-        return $pdf->download('laporan-pengaduan-tte.pdf');
+        $pdf = Pdf::loadView('pengaduan.pdf', compact('pengaduanPerOpd', 'status'));
+        return $pdf->download('laporan-pengaduan-' . ($status ?? 'semua') . '.pdf');
     }
 }

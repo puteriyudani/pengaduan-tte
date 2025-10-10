@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Kategori;
 use App\Models\Pengaduan;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
@@ -44,9 +45,11 @@ class DashboardController extends Controller
             })->toArray();
 
             // Grafik per OPD
-            $pengaduanPerOpd = Pengaduan::selectRaw('opd, COUNT(*) as total')
-                ->groupBy('opd')
-                ->pluck('total', 'opd')
+            $pengaduanPerOpd = DB::table('pengaduan')
+                ->join('opds', 'pengaduan.opd_id', '=', 'opds.id')
+                ->select('opds.nama_opd', DB::raw('COUNT(pengaduan.id) as total'))
+                ->groupBy('opds.nama_opd')
+                ->pluck('total', 'opds.nama_opd')
                 ->toArray();
 
             // Grafik per Kategori (semua kategori, termasuk yang 0)

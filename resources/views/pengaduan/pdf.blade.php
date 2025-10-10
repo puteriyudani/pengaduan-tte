@@ -89,11 +89,19 @@
 </head>
 
 <body>
-    <h2>Laporan Data Pengaduan Tanda Tangan Elektronik (TTE)</h2>
+    <h2>
+        Laporan Data Pengaduan Tanda Tangan Elektronik (TTE)
+        @if (!empty($status))
+            — Status: {{ ucfirst($status) }}
+        @endif
+    </h2>
 
-    @foreach ($pengaduanPerOpd as $opd => $dataOpd)
+    @foreach ($pengaduanPerOpd as $opdId => $dataOpd)
         <div class="{{ !$loop->first ? 'page-break' : '' }}">
-            <h3>OPD: {{ $opd ?? 'Tidak Ada OPD' }}</h3>
+            <h3>
+                OPD:
+                {{ optional($dataOpd->first()->opd)->nama_opd ?? 'Tidak Ada OPD' }}
+            </h3>
 
             {{-- Group per kategori --}}
             @foreach ($dataOpd->groupBy('kategori.nama_kategori') as $kategori => $dataKategori)
@@ -101,8 +109,8 @@
 
                 {{-- Group per bulan --}}
                 @foreach ($dataKategori->groupBy(function ($item) {
-                    return $item->created_at->format('F Y'); // contoh: Januari 2025
-                }) as $bulan => $dataBulan)
+        return $item->created_at->format('F Y'); // contoh: Januari 2025
+    }) as $bulan => $dataBulan)
                     <h5>Bulan: {{ $bulan }}</h5>
 
                     <table>
@@ -141,7 +149,8 @@
             @endforeach
 
             <div class="summary">
-                Jumlah pengaduan di OPD {{ $opd }}: {{ $dataOpd->count() }}
+                Jumlah pengaduan di OPD {{ optional($dataOpd->first()->opd)->nama_opd ?? 'Tidak Ada OPD' }}:
+                {{ $dataOpd->count() }}
             </div>
         </div>
     @endforeach

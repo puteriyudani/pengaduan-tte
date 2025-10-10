@@ -188,7 +188,7 @@
                     <div class="card shadow mb-4">
                         <div class="card-header py-3 d-flex justify-content-between align-items-center">
                             <h6 class="m-0 font-weight-bold text-primary">Pengaduan</h6>
-                            <a href="{{ route('pengaduan.exportPdf') }}" class="btn btn-sm btn-primary shadow-sm">
+                            <a href="{{ route('pengaduan.exportPdf', ['status' => 'pending']) }}" class="btn btn-sm btn-primary shadow-sm">
                                 <i class="fas fa-download fa-sm text-white-50"></i> Download
                             </a>
                         </div>
@@ -232,7 +232,7 @@
                                                 <td>{{ $pengaduan->nama }}</td>
                                                 <td>{{ $pengaduan->email }}</td>
                                                 <td>{{ $pengaduan->whatsapp }}</td>
-                                                <td>{{ $pengaduan->opd }}</td>
+                                                <td>{{ $pengaduan->opd->nama_opd }}</td>
                                                 <td>{{ $pengaduan->keterangan }}</td>
                                                 <td>
                                                     <span class="badge bg-info text-dark">

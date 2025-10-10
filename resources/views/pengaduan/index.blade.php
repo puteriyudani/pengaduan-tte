@@ -236,7 +236,7 @@
                                                 <td>{{ $pengaduan->nama }}</td>
                                                 <td>{{ $pengaduan->email }}</td>
                                                 <td>{{ $pengaduan->whatsapp }}</td>
-                                                <td>{{ $pengaduan->opd }}</td>
+                                                <td>{{ $pengaduan->opd->nama_opd }}</td>
                                                 <td>{{ $pengaduan->keterangan }}</td>
                                                 <td>
                                                     <span class="badge bg-info text-dark">
