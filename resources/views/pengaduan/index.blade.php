@@ -188,9 +188,25 @@
                     <div class="card shadow mb-4">
                         <div class="card-header py-3 d-flex justify-content-between align-items-center">
                             <h6 class="m-0 font-weight-bold text-primary">Pengaduan</h6>
-                            <a href="{{ route('pengaduan.exportPdf') }}" class="btn btn-sm btn-primary shadow-sm">
-                                <i class="fas fa-download fa-sm text-white-50"></i> Download
-                            </a>
+
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-primary btn-sm dropdown-toggle"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-file-download"></i> Download
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('pengaduan.download.rekap') }}">
+                                            <i class="fas fa-chart-pie text-success me-2"></i> Download Rekap
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('pengaduan.download.detail') }}">
+                                            <i class="fas fa-list text-primary me-2"></i> Download Detail
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
 
                         <div class="card-body">

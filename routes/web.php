@@ -47,8 +47,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::patch('pengaduan/{id}/selesai', [PengaduanController::class, 'selesai'])->name('pengaduan.selesai');
     Route::get('/pengaduan/pending', [PengaduanController::class, 'pending'])->name('pengaduan.pending');
     Route::get('/pengaduan/selesai', [PengaduanController::class, 'selesaiList'])->name('pengaduan.selesailist');
-    Route::get('/pengaduan/pdf', [PengaduanController::class, 'exportPdf'])
-        ->name('pengaduan.exportPdf');
+    Route::get('/pengaduan/download/rekap', [PengaduanController::class, 'downloadRekap'])->name('pengaduan.download.rekap');
+    Route::get('/pengaduan/download/detail', [PengaduanController::class, 'downloadDetail'])->name('pengaduan.download.detail');
 });
 
 require __DIR__ . '/auth.php';

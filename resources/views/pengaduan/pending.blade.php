@@ -188,9 +188,9 @@
                     <div class="card shadow mb-4">
                         <div class="card-header py-3 d-flex justify-content-between align-items-center">
                             <h6 class="m-0 font-weight-bold text-primary">Pengaduan</h6>
-                            <a href="{{ route('pengaduan.exportPdf', ['status' => 'pending']) }}" class="btn btn-sm btn-primary shadow-sm">
+                            {{-- <a href="{{ route('pengaduan.exportPdf', ['status' => 'pending']) }}" class="btn btn-sm btn-primary shadow-sm">
                                 <i class="fas fa-download fa-sm text-white-50"></i> Download
-                            </a>
+                            </a> --}}
                         </div>
 
                         <div class="card-body">

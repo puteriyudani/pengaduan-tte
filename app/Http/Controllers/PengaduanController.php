@@ -85,19 +85,32 @@ class PengaduanController extends Controller
         return redirect()->route('pengaduan.index')->with('success', 'Pengaduan berhasil ditandai selesai dan notifikasi dikirim.');
     }
 
-    public function exportPdf(Request $request)
+    public function downloadRekap()
     {
-        $status = $request->get('status');
+        $pengaduan = Pengaduan::with(['opd', 'kategori'])->get();
 
-        $pengaduanQuery = Pengaduan::with(['kategori', 'opd']);
-        if ($status) {
-            $pengaduanQuery->where('status', $status);
-        }
+        // Group by OPD
+        $rekapPerOpd = $pengaduan->groupBy('opd.nama_opd');
 
-        $pengaduan = $pengaduanQuery->get();
+        // Hitung total
+        $total = $pengaduan->count();
+        $totalPending = $pengaduan->where('status', 'pending')->count();
+        $totalSelesai = $pengaduan->where('status', 'selesai')->count();
+
+        $pdf = PDF::loadView('laporan.pengaduan_rekap', compact('rekapPerOpd', 'total', 'totalPending', 'totalSelesai'))
+            ->setPaper('A4', 'landscape');
+
+        return $pdf->download('Laporan_Rekap_Pengaduan_TTE.pdf');
+    }
+
+    public function downloadDetail()
+    {
+        $pengaduan = Pengaduan::with(['opd', 'kategori'])->get();
         $pengaduanPerOpd = $pengaduan->groupBy('opd_id');
 
-        $pdf = Pdf::loadView('pengaduan.pdf', compact('pengaduanPerOpd', 'status'));
-        return $pdf->download('laporan-pengaduan-' . ($status ?? 'semua') . '.pdf');
+        $pdf = PDF::loadView('laporan.pengaduan_detail', compact('pengaduanPerOpd'))
+            ->setPaper('A4', 'portrait');
+
+        return $pdf->download('Laporan_Detail_Pengaduan_TTE.pdf');
     }
 }
