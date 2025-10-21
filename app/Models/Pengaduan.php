@@ -16,7 +16,7 @@ class Pengaduan extends Model
         'email',
         'whatsapp',
         'kategori_id',
-        'opd',
+        'opd_id',
         'keterangan',
         'tanggal',
         'tanggal_selesai',

@@ -2,7 +2,6 @@
 @section('title', 'Pengaduan TTE')
 @section('styles')
     <style>
-        /* Background full page */
         .dashboard-bg {
             position: relative;
             background: url("{{ asset('img/background.png') }}") no-repeat center center fixed;
@@ -16,7 +15,6 @@
             padding: 1rem;
         }
 
-        /* Overlay gelap */
         .dashboard-bg::before {
             content: "";
             position: absolute;
@@ -28,7 +26,6 @@
             z-index: 1;
         }
 
-        /* Logo kiri atas */
         .logo-top {
             position: absolute;
             top: 20px;
@@ -38,11 +35,9 @@
 
         .logo-top img {
             height: 60px;
-            /* bisa disesuaikan */
             filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.7));
         }
 
-        /* Konten di atas overlay */
         .content-wrapper {
             position: relative;
             z-index: 2;
@@ -56,7 +51,6 @@
             margin-bottom: 1.5rem;
         }
 
-        /* Tombol */
         .btn-laporan {
             background-color: #007bff;
             color: #fff;
@@ -74,19 +68,30 @@
             background-color: #0056b3;
             color: #fff;
         }
+
+        /* Bintang merah untuk field wajib */
+        .required-star {
+            color: #dc3545;
+            font-weight: bold;
+            margin-left: 2px;
+        }
+
+        /* Border merah kalau input kosong saat submit */
+        .is-invalid {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 0.1rem rgba(220, 53, 69, 0.25);
+        }
     </style>
 @endsection
 
 @section('content')
     <div class="dashboard-bg">
-        <!-- Logo kiri atas -->
         <div class="logo-top">
             <img src="{{ asset('img/logo.png') }}" alt="Logo">
         </div>
 
         <div class="content-wrapper">
             <h3>Selamat Datang di Sistem Pengaduan Tanda Tangan Elektronik</h3>
-            <!-- Tombol untuk buka modal -->
             <a href="#" class="btn-laporan" data-bs-toggle="modal" data-bs-target="#formLaporanModal">
                 Buat Laporan
             </a>
@@ -109,37 +114,32 @@
                         aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="{{ route('pengaduan.store') }}" method="POST">
+                    <form id="formPengaduan" action="{{ route('pengaduan.store') }}" method="POST" novalidate>
                         @csrf
+
                         <div class="mb-3">
-                            <label for="nama" class="form-label">Nama (sesuai KTP)</label>
+                            <label for="nama" class="form-label">Nama (sesuai KTP)<span
+                                    class="required-star">*</span></label>
                             <input type="text" name="nama" id="nama" class="form-control"
                                 placeholder="Masukkan nama lengkap" required>
-                            @error('nama')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
                         </div>
 
                         <div class="mb-3">
-                            <label for="email" class="form-label">Email Dinas</label>
+                            <label for="email" class="form-label">Email Dinas<span class="required-star">*</span></label>
                             <input type="email" name="email" id="email" class="form-control"
                                 placeholder="nama@riau.go.id" required>
-                            @error('email')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
                         </div>
 
                         <div class="mb-3">
-                            <label for="whatsapp" class="form-label">No. WhatsApp</label>
+                            <label for="whatsapp" class="form-label">No. WhatsApp<span
+                                    class="required-star">*</span></label>
                             <input type="text" name="whatsapp" id="whatsapp" class="form-control"
                                 placeholder="628xxxxxxxxxx" required>
-                            @error('whatsapp')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
                         </div>
 
                         <div class="mb-3">
-                            <label for="kategori_id" class="form-label">Kategori Permasalahan</label>
+                            <label for="kategori_id" class="form-label">Kategori Permasalahan<span
+                                    class="required-star">*</span></label>
                             <select name="kategori_id" id="kategori_id" class="form-select" required>
                                 <option value="">-- Pilih Kategori --</option>
                                 @foreach ($kategori as $item)
@@ -147,38 +147,30 @@
                                 @endforeach
                                 <option value="lainnya">Lainnya</option>
                             </select>
-                            @error('kategori_id')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
                         </div>
 
-                        <!-- Input manual jika pilih "Lainnya" -->
                         <div class="mb-3 d-none" id="kategori_lainnya_wrapper">
-                            <label for="kategori_lainnya" class="form-label">Tulis Kategori Lainnya</label>
+                            <label for="kategori_lainnya" class="form-label">Tulis Kategori Lainnya<span
+                                    class="required-star">*</span></label>
                             <input type="text" name="kategori_lainnya" id="kategori_lainnya" class="form-control"
                                 placeholder="Masukkan kategori permasalahan lain">
                         </div>
 
                         <div class="mb-3">
-                            <label for="opd_id" class="form-label">OPD</label>
+                            <label for="opd_id" class="form-label">OPD<span class="required-star">*</span></label>
                             <select name="opd_id" id="opd_id" class="form-select" required>
                                 <option value="">-- Pilih OPD --</option>
                                 @foreach ($opd as $item)
                                     <option value="{{ $item->id }}">{{ $item->nama_opd }}</option>
                                 @endforeach
                             </select>
-                            @error('opd_id')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
                         </div>
 
                         <div class="mb-3">
-                            <label for="keterangan" class="form-label">Keterangan</label>
+                            <label for="keterangan" class="form-label">Keterangan<span
+                                    class="required-star">*</span></label>
                             <textarea name="keterangan" id="keterangan" class="form-control" rows="4"
-                                placeholder="Diisi jika perlu menjelaskan kendala" required></textarea>
-                            @error('keterangan')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                                placeholder="Jelaskan kendala yang dialami" required></textarea>
                         </div>
 
                         <div class="d-grid">
@@ -215,6 +207,24 @@
                     inputLainnyaWrapper.classList.add('d-none');
                     inputLainnya.required = false;
                     inputLainnya.value = '';
+                }
+            });
+
+            // Tambahkan validasi warna merah otomatis
+            const form = document.getElementById('formPengaduan');
+            form.addEventListener('submit', function(e) {
+                let invalid = false;
+                form.querySelectorAll('input[required], select[required], textarea[required]').forEach(
+                    field => {
+                        if (!field.value.trim()) {
+                            field.classList.add('is-invalid');
+                            invalid = true;
+                        } else {
+                            field.classList.remove('is-invalid');
+                        }
+                    });
+                if (invalid) {
+                    e.preventDefault(); // cegah submit jika ada yang kosong
                 }
             });
         });

@@ -37,19 +37,27 @@ class LoginRequest extends FormRequest
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function authenticate(): void
+    public function authenticate()
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
-            RateLimiter::hit($this->throttleKey());
+        $user = \App\Models\User::where('email', $this->email)->first();
 
-            throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
+        if (! $user) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'email' => __('Email tidak ditemukan.'),
             ]);
         }
 
-        RateLimiter::clear($this->throttleKey());
+        if (! \Illuminate\Support\Facades\Hash::check($this->password, $user->password)) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'password' => __('Password yang Anda masukkan salah.'),
+            ]);
+        }
+
+        \Illuminate\Support\Facades\Auth::login($user, $this->boolean('remember'));
+
+        \Illuminate\Support\Facades\RateLimiter::clear($this->throttleKey());
     }
 
     /**
@@ -80,6 +88,6 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
+        return Str::transliterate(Str::lower($this->string('email')) . '|' . $this->ip());
     }
 }
