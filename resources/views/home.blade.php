@@ -31,11 +31,20 @@
             top: 20px;
             left: 20px;
             z-index: 3;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            /* jarak antar logo */
         }
 
         .logo-top img {
             height: 60px;
             filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.7));
+            transition: transform 0.2s ease;
+        }
+
+        .logo-top img:hover {
+            transform: scale(1.05);
         }
 
         .content-wrapper {
@@ -116,7 +125,8 @@
 @section('content')
     <div class="dashboard-bg">
         <div class="logo-top">
-            <img src="{{ asset('img/logo.png') }}" alt="Logo">
+            <img src="{{ asset('img/riau.png') }}" alt="Logo Kiri" class="logo-left">
+            <img src="{{ asset('img/logo.png') }}" alt="Logo Kanan" class="logo-right">
         </div>
 
         <div class="content-wrapper">
