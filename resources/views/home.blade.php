@@ -177,7 +177,7 @@
                         <div class="mb-3">
                             <label for="whatsapp" class="form-label">No. WhatsApp<span
                                     class="required-star">*</span></label>
-                            <input type="text" name="whatsapp" id="whatsapp" class="form-control"
+                            <input type="number" name="whatsapp" id="whatsapp" class="form-control"
                                 placeholder="628xxxxxxxxxx" required>
                         </div>
                         <div class="mb-3">
