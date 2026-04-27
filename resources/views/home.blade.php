@@ -171,8 +171,11 @@
                         </div>
                         <div class="mb-3">
                             <label for="email" class="form-label">Email Dinas<span class="required-star">*</span></label>
-                            <input type="email" name="email" id="email" class="form-control"
-                                placeholder="nama@riau.go.id" required>
+                            <input type="email" name="email" class="form-control" placeholder="nama@riau.go.id"
+                                pattern="^[a-zA-Z0-9._%+-]+@riau\.go\.id$" required>
+                            <div class="invalid-feedback">
+                                Email harus menggunakan domain @riau.go.id
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label for="whatsapp" class="form-label">No. WhatsApp<span
@@ -234,6 +237,10 @@
 @section('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('formPengaduan');
+            const emailField = form.querySelector('input[name="email"]');
+            const emailPattern = /^[a-zA-Z0-9._%+-]+@riau\.go\.id$/;
+
             const selectKategori = document.getElementById('kategori_id');
             const inputLainnyaWrapper = document.getElementById('kategori_lainnya_wrapper');
             const inputLainnya = document.getElementById('kategori_lainnya');
@@ -249,10 +256,17 @@
                 }
             });
 
-            // Tambahkan validasi warna merah otomatis
-            const form = document.getElementById('formPengaduan');
+            emailField.addEventListener('input', function() {
+                if (!emailPattern.test(this.value)) {
+                    this.classList.add('is-invalid');
+                } else {
+                    this.classList.remove('is-invalid');
+                }
+            });
+
             form.addEventListener('submit', function(e) {
                 let invalid = false;
+
                 form.querySelectorAll('input[required], select[required], textarea[required]').forEach(
                     field => {
                         if (!field.value.trim()) {
@@ -262,8 +276,15 @@
                             field.classList.remove('is-invalid');
                         }
                     });
+
+                // VALIDASI EMAIL KHUSUS
+                if (!emailPattern.test(emailField.value)) {
+                    emailField.classList.add('is-invalid');
+                    invalid = true;
+                }
+
                 if (invalid) {
-                    e.preventDefault(); // cegah submit jika ada yang kosong
+                    e.preventDefault();
                 }
             });
         });

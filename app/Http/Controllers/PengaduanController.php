@@ -7,7 +7,7 @@ use App\Mail\PengaduanSelesaiMail;
 use App\Models\Kategori;
 use App\Models\Pengaduan;
 use Illuminate\Support\Facades\Mail;
-use Barryvdh\DomPDF\Facade\Pdf;
+use Barryvdh\DomPDF\Facade\PDF;
 
 class PengaduanController extends Controller
 {
@@ -57,16 +57,43 @@ class PengaduanController extends Controller
     {
         $validated = $request->validate([
             'nama'        => 'required|string|max:255',
-            'email'       => 'required|email|max:255',
+            'email' => [
+                'required',
+                'email',
+                function ($attribute, $value, $fail) {
+                    if (!str_ends_with($value, '@riau.go.id')) {
+                        $fail('Email harus menggunakan domain @riau.go.id');
+                    }
+                }
+            ],
             'whatsapp'    => 'required|max:20',
             'kategori_id' => 'required|exists:kategori,id',
             'opd_id'      => 'required|exists:opds,id',
             'keterangan'  => 'required|string',
         ]);
 
-        Pengaduan::create($validated);
+        $pengaduan = Pengaduan::create($validated);
 
-        return redirect('/')->with('success', 'Pengaduan berhasil dikirim.');
+        // ambil relasi biar tampil nama
+        $pengaduan->load('kategori', 'opd');
+
+        // format pesan
+        $pesan = "Pengaduan TTE Baru\n\n"
+            . "Nama: {$pengaduan->nama}\n"
+            . "Email: {$pengaduan->email}\n"
+            . "No WA: {$pengaduan->whatsapp}\n"
+            . "Kategori: {$pengaduan->kategori->nama_kategori}\n"
+            . "OPD: {$pengaduan->opd->nama_opd}\n"
+            . "Keterangan: {$pengaduan->keterangan}";
+
+        // encode biar aman di URL
+        $pesanEncoded = urlencode($pesan);
+
+        // nomor tujuan
+        $nomor = "6281275116838";
+
+        // redirect ke WhatsApp
+        return redirect("https://wa.me/$nomor?text=$pesanEncoded");
     }
 
     public function selesai($id)
