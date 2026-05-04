@@ -1,5 +1,5 @@
 @extends('layouts.layout')
-@section('title', 'OPD')
+@section('title', 'Setting')
 @section('styles')
     <style>
         .sidebar-brand img {
@@ -51,13 +51,13 @@
                         <span>Category</span></a>
                 </li>
 
-                <li class="nav-item active">
+                <li class="nav-item">
                     <a class="nav-link" href="{{ route('opd.index') }}">
                         <i class="fas fa-fw fa-university"></i>
                         <span>OPD</span></a>
                 </li>
 
-                <li class="nav-item">
+                <li class="nav-item active">
                     <a class="nav-link" href="{{ route('setting.index') }}">
                         <i class="fas fa-fw fa-cogs"></i>
                         <span>Setting</span></a>
@@ -178,58 +178,30 @@
                     @endif
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">OPD</h1>
-                    <p class="mb-4">OPD adalah permasalahan yang terjadi terkait TTE.</p>
+                    <h1 class="h3 mb-2 text-gray-800">Setting</h1>
+                    <p class="mb-4">Pengaturan Website</p>
 
-                    <!-- OPD -->
+                    <!-- Setting -->
                     <div class="card shadow mb-4">
-                        <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                            <h6 class="m-0 font-weight-bold text-primary">OPD</h6>
-                            <a href="{{ route('opd.create') }}" class="btn btn-sm btn-primary">
-                                <i class="fas fa-plus"></i> Tambah OPD
-                            </a>
+                        <div class="card-header">
+                            <h6 class="m-0 font-weight-bold text-primary">Pengaturan No. WhatsApp</h6>
                         </div>
 
                         <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                    <thead>
-                                        <tr>
-                                            <th>No.</th>
-                                            <th>Nama OPD</th>
-                                            <th>Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @forelse($opds as $index => $opd)
-                                            <tr>
-                                                <td>{{ $opds->firstItem() + $index }}</td>
-                                                <td>{{ $opd->nama_opd }}</td>
-                                                <td>
-                                                    <a href="{{ route('opd.edit', $opd->id) }}"
-                                                        class="btn btn-sm btn-warning">Edit</a>
-                                                    <form action="{{ route('opd.destroy', $opd->id) }}" method="POST"
-                                                        style="display:inline;">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-sm btn-danger"
-                                                            onclick="return confirm('Yakin mau hapus?')">Hapus</button>
-                                                    </form>
-                                                </td>
-                                            </tr>
-                                        @empty
-                                            <tr>
-                                                <td colspan="3" class="text-center text-muted">
-                                                    Belum ada opd yang ditambahkan.
-                                                </td>
-                                            </tr>
-                                        @endforelse
-                                    </tbody>
-                                </table>
-                                <div class="d-flex justify-content-end mt-3">
-                                    {{ $opds->links('pagination::bootstrap-5') }}
+                            <form action="{{ route('setting.update') }}" method="POST">
+                                @csrf
+
+                                {{-- No WhatsApp --}}
+                                <div class="mb-3">
+                                    <label class="form-label">Nomor WhatsApp</label>
+                                    <input type="text" name="no_wa" class="form-control"
+                                        value="{{ $settings['no_wa'] ?? '' }}" placeholder="Contoh: 6281234567890">
                                 </div>
-                            </div>
+
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Simpan
+                                </button>
+                            </form>
                         </div>
                     </div>
 

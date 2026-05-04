@@ -7,6 +7,7 @@ use App\Http\Controllers\OpdController;
 use App\Http\Controllers\PengaduanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserController;
 use App\Models\Kategori;
 use App\Models\OPD;
@@ -40,6 +41,9 @@ Route::middleware(['auth', 'role:super_admin'])->group(function () {
         ->name('superadmin.users.create');
     Route::post('superadmin/users', [RegisteredUserController::class, 'storeForSuperAdmin'])
         ->name('superadmin.users.store');
+
+    Route::get('/setting', [SettingController::class, 'index'])->name('setting.index');
+    Route::post('/setting', [SettingController::class, 'update'])->name('setting.update');
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {

@@ -8,6 +8,7 @@ use App\Models\Kategori;
 use App\Models\Pengaduan;
 use Illuminate\Support\Facades\Mail;
 use Barryvdh\DomPDF\Facade\PDF;
+use Illuminate\Support\Facades\DB;
 
 class PengaduanController extends Controller
 {
@@ -90,7 +91,12 @@ class PengaduanController extends Controller
         $pesanEncoded = urlencode($pesan);
 
         // nomor tujuan
-        $nomor = "6281275116838";
+        $nomor = DB::table('settings')->where('key', 'no_wa')->value('value');
+
+        // fallback kalau kosong (biar aman)
+        if (!$nomor) {
+            $nomor = '6287899295936';
+        }
 
         // redirect ke WhatsApp
         return redirect("https://wa.me/$nomor?text=$pesanEncoded");
