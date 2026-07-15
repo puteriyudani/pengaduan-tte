@@ -21,11 +21,8 @@ Route::get('/', function () {
 
 Route::post('pengaduan', [PengaduanController::class, 'store'])->name('pengaduan.store');
 
-Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
-
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'role:super_admin,admin'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -40,6 +37,7 @@ Route::middleware(['auth', 'role:super_admin'])->group(function () {
     Route::get('superadmin/users/create', [RegisteredUserController::class, 'createForSuperAdmin'])
         ->name('superadmin.users.create');
     Route::post('superadmin/users', [RegisteredUserController::class, 'storeForSuperAdmin'])
+        ->middleware('throttle:3,60')
         ->name('superadmin.users.store');
 
     Route::get('/setting', [SettingController::class, 'index'])->name('setting.index');

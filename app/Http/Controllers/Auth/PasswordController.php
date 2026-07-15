@@ -26,4 +26,26 @@ class PasswordController extends Controller
 
         return back()->with('status', 'password-updated');
     }
+
+    public function showForcePasswordForm()
+    {
+        return view('auth.force-password');
+    }
+
+    public function updateForcePassword(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'password' => ['required', Password::defaults(), 'confirmed'],
+        ]);
+
+        $request->user()->update([
+            'password' => Hash::make($validated['password']),
+            'force_password_change' => false,
+        ]);
+
+        $request->session()->regenerate();
+
+        return redirect()->route('dashboard')
+            ->with('success', 'Password berhasil diperbarui.');
+    }
 }

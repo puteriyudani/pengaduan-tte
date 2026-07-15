@@ -15,7 +15,7 @@ class SettingSeeder extends Seeder
         DB::table('settings')->insert([
             [
                 'key' => 'no_wa',
-                'value' => '6281275116838', // ganti sesuai kebutuhan
+                'value' => '6287899295936', // ganti sesuai kebutuhan
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

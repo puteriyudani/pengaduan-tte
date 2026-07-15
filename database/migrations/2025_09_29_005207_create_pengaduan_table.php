@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('nama');
             $table->string('email');
             $table->foreignId('kategori_id')->constrained('kategori')->onDelete('cascade');
-            $table->string('opd');
+            $table->foreignId('opd_id')->constrained('kategori')->onDelete('cascade');
             $table->string('keterangan');
             $table->date('tanggal')->default(DB::raw('CURRENT_DATE'));
             $table->string('hari')->default(DB::raw('DAYNAME(CURRENT_DATE)'));

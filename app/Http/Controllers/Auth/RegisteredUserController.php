@@ -71,13 +71,16 @@ class RegisteredUserController extends Controller
         ]);
 
 
-        User::create([
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => $request->role,
         ]);
 
-        return redirect()->route('user.index')->with('success', 'User berhasil dibuat!');
+        event(new Registered($user));
+
+        return redirect()->route('user.index')
+            ->with('success', 'User berhasil dibuat!');
     }
 }
