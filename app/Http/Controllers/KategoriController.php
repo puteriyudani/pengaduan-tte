@@ -12,7 +12,7 @@ class KategoriController extends Controller
      */
     public function index()
     {
-        $kategoris = Kategori::paginate(10);
+        $kategoris = Kategori::withCount('pengaduan')->paginate(10);
         return view('kategori.index', compact('kategoris'));
     }
 
@@ -73,8 +73,22 @@ class KategoriController extends Controller
     public function destroy(string $id)
     {
         $kategori = Kategori::findOrFail($id);
+
+        $jumlahPengaduan = $kategori->pengaduan()->count();
+
+        if ($jumlahPengaduan > 0) {
+            return redirect()
+                ->route('kategori.index')
+                ->with(
+                    'error',
+                    "Kategori tidak dapat dihapus karena masih digunakan oleh {$jumlahPengaduan} data pengaduan. Pindahkan atau arsipkan data pengaduan terlebih dahulu."
+                );
+        }
+
         $kategori->delete();
 
-        return redirect()->route('kategori.index')->with('success', 'Kategori berhasil dihapus');
+        return redirect()
+            ->route('kategori.index')
+            ->with('success', 'Kategori berhasil dihapus.');
     }
 }

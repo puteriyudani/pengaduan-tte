@@ -203,11 +203,14 @@
                                                     <a href="{{ route('kategori.edit', $kategori->id) }}"
                                                         class="btn btn-sm btn-warning">Edit</a>
                                                     <form action="{{ route('kategori.destroy', $kategori->id) }}"
-                                                        method="POST" style="display:inline;">
+                                                        method="POST" style="display:inline;"
+                                                        onsubmit="return confirmDelete('{{ $kategori->nama_kategori }}', {{ $kategori->pengaduan_count }});">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn btn-sm btn-danger"
-                                                            onclick="return confirm('Yakin mau hapus?')">Hapus</button>
+
+                                                        <button type="submit" class="btn btn-sm btn-danger">
+                                                            Hapus
+                                                        </button>
                                                     </form>
                                                 </td>
                                             </tr>
@@ -299,5 +302,21 @@
                 sidebarToggleTop.addEventListener("click", toggleSidebar);
             }
         });
+
+        function confirmDelete(namaKategori, jumlahPengaduan) {
+
+            let pesan = `Anda akan menghapus kategori "${namaKategori}".\n\n`;
+
+            if (jumlahPengaduan > 0) {
+                pesan += `Kategori ini masih digunakan oleh ${jumlahPengaduan} data pengaduan.\n\n`;
+                pesan += "Kategori tidak dapat dihapus sebelum seluruh data pengaduan dipindahkan atau diarsipkan.\n\n";
+                pesan += "Tekan OK untuk melihat pemberitahuan lebih lanjut atau Cancel untuk membatalkan.";
+            } else {
+                pesan += "Kategori ini tidak memiliki data pengaduan.\n\n";
+                pesan += "Apakah Anda yakin ingin menghapus kategori ini?";
+            }
+
+            return confirm(pesan);
+        }
     </script>
 @endsection

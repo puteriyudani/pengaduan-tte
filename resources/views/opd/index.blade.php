@@ -209,11 +209,15 @@
                                                     <a href="{{ route('opd.edit', $opd->id) }}"
                                                         class="btn btn-sm btn-warning">Edit</a>
                                                     <form action="{{ route('opd.destroy', $opd->id) }}" method="POST"
-                                                        style="display:inline;">
+                                                        style="display:inline;"
+                                                        onsubmit="return confirmDelete('{{ $opd->nama_opd }}', {{ $opd->pengaduan_count }});">
+
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn btn-sm btn-danger"
-                                                            onclick="return confirm('Yakin mau hapus?')">Hapus</button>
+
+                                                        <button type="submit" class="btn btn-sm btn-danger">
+                                                            Hapus
+                                                        </button>
                                                     </form>
                                                 </td>
                                             </tr>
@@ -305,5 +309,20 @@
                 sidebarToggleTop.addEventListener("click", toggleSidebar);
             }
         });
+
+        function confirmDelete(namaOPD, jumlahPengaduan) {
+
+            let pesan = `Anda akan menghapus OPD "${namaOPD}".\n\n`;
+
+            if (jumlahPengaduan > 0) {
+                pesan += `OPD ini masih digunakan oleh ${jumlahPengaduan} data pengaduan.\n\n`;
+                pesan += "OPD tidak dapat dihapus sebelum data pengaduan dipindahkan atau diarsipkan terlebih dahulu.";
+            } else {
+                pesan += "OPD ini tidak memiliki data pengaduan.\n\n";
+                pesan += "Apakah Anda yakin ingin menghapus OPD ini?";
+            }
+
+            return confirm(pesan);
+        }
     </script>
 @endsection

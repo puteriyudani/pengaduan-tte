@@ -16,12 +16,31 @@ return new class extends Migration
             $table->id();
             $table->string('nama');
             $table->string('email');
-            $table->foreignId('kategori_id')->constrained('kategori')->onDelete('cascade');
-            $table->foreignId('opd_id')->constrained('kategori')->onDelete('cascade');
+
+            $table->foreignId('kategori_id')
+                ->constrained('kategori')
+                ->onDelete('restrict');
+
+            $table->foreignId('opd_id')
+                ->constrained('opd')
+                ->onDelete('restrict');
+
             $table->string('keterangan');
-            $table->date('tanggal')->default(DB::raw('CURRENT_DATE'));
-            $table->string('hari')->default(DB::raw('DAYNAME(CURRENT_DATE)'));
+
+            $table->dateTime('tanggal')
+                ->default(DB::raw('CURRENT_TIMESTAMP'));
+
+            $table->string('hari')
+                ->default(DB::raw('DAYNAME(CURRENT_DATE)'));
+
+            $table->string('status')->default('pending');
+
+            $table->dateTime('tanggal_selesai')->nullable();
+
+            $table->string('whatsapp')->nullable();
+
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

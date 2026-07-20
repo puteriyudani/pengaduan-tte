@@ -12,7 +12,9 @@ class OpdController extends Controller
      */
     public function index()
     {
-        $opds = OPD::orderBy('nama_opd', 'asc')->paginate(10);
+        $opds = OPD::withCount('pengaduan')
+            ->orderBy('nama_opd', 'asc')
+            ->paginate(10);
         return view('opd.index', compact('opds'));
     }
 
@@ -73,8 +75,22 @@ class OpdController extends Controller
     public function destroy(string $id)
     {
         $opd = OPD::findOrFail($id);
+
+        $jumlahPengaduan = $opd->pengaduan()->count();
+
+        if ($jumlahPengaduan > 0) {
+            return redirect()
+                ->route('opd.index')
+                ->with(
+                    'error',
+                    "OPD tidak dapat dihapus karena masih digunakan oleh {$jumlahPengaduan} data pengaduan. Pindahkan atau arsipkan data pengaduan terlebih dahulu."
+                );
+        }
+
         $opd->delete();
 
-        return redirect()->route('opd.index')->with('success', 'OPD berhasil dihapus');
+        return redirect()
+            ->route('opd.index')
+            ->with('success', 'OPD berhasil dihapus.');
     }
 }
