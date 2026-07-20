@@ -5,6 +5,7 @@ namespace App\Http\Requests\Auth;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -44,14 +45,16 @@ class LoginRequest extends FormRequest
         $user = \App\Models\User::where('email', $this->email)->first();
 
         if (! $user) {
-            throw \Illuminate\Validation\ValidationException::withMessages([
-                'email' => __('Email tidak ditemukan.'),
+            RateLimiter::hit($this->throttleKey());
+            throw ValidationException::withMessages([
+                'email' => __('Kredensial yang dimasukkan tidak valid.'),
             ]);
         }
 
-        if (! \Illuminate\Support\Facades\Hash::check($this->password, $user->password)) {
-            throw \Illuminate\Validation\ValidationException::withMessages([
-                'password' => __('Password yang Anda masukkan salah.'),
+        if (! Hash::check($this->password, $user->password)) {
+            RateLimiter::hit($this->throttleKey());
+            throw ValidationException::withMessages([
+                'email' => __('Kredensial yang dimasukkan tidak valid.'),
             ]);
         }
 
