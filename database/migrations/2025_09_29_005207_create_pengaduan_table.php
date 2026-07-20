@@ -22,7 +22,7 @@ return new class extends Migration
                 ->onDelete('restrict');
 
             $table->foreignId('opd_id')
-                ->constrained('opd')
+                ->constrained('opds')
                 ->onDelete('restrict');
 
             $table->string('keterangan');
