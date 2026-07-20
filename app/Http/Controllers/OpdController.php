@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\OPD;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class OpdController extends Controller
 {
@@ -15,6 +16,7 @@ class OpdController extends Controller
         $opds = OPD::withCount('pengaduan')
             ->orderBy('nama_opd', 'asc')
             ->paginate(10);
+
         return view('opd.index', compact('opds'));
     }
 
@@ -32,14 +34,22 @@ class OpdController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama_opd' => 'required|string|max:255|unique:opds,nama_opd',
+            'nama_opd' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('opds', 'nama_opd')
+                    ->whereNull('deleted_at'),
+            ],
         ]);
 
         OPD::create([
             'nama_opd' => $request->nama_opd,
         ]);
 
-        return redirect()->route('opd.index')->with('success', 'OPD berhasil ditambahkan');
+        return redirect()
+            ->route('opd.index')
+            ->with('success', 'OPD berhasil ditambahkan');
     }
 
     /**
@@ -48,6 +58,7 @@ class OpdController extends Controller
     public function edit(string $id)
     {
         $opd = OPD::findOrFail($id);
+
         return view('opd.edit', compact('opd'));
     }
 
@@ -59,14 +70,23 @@ class OpdController extends Controller
         $opd = OPD::findOrFail($id);
 
         $request->validate([
-            'nama_opd' => 'required|string|max:255|unique:opds,nama_opd,' . $opd->id,
+            'nama_opd' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('opds', 'nama_opd')
+                    ->ignore($opd->id)
+                    ->whereNull('deleted_at'),
+            ],
         ]);
 
         $opd->update([
             'nama_opd' => $request->nama_opd,
         ]);
 
-        return redirect()->route('opd.index')->with('success', 'OPD berhasil diperbarui');
+        return redirect()
+            ->route('opd.index')
+            ->with('success', 'OPD berhasil diperbarui');
     }
 
     /**

@@ -9,25 +9,36 @@ use App\Models\Pengaduan;
 use Illuminate\Support\Facades\Mail;
 use Barryvdh\DomPDF\Facade\PDF;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class PengaduanController extends Controller
 {
     public function index(Request $request)
     {
-        $kategoriId = $request->get('kategori_id'); // ambil parameter dari URL
-        $kategori = Kategori::all();
+        $kategoriId = $request->get('kategori_id');
+
+        // hanya tampilkan kategori aktif
+        $kategori = Kategori::whereNull('deleted_at')->get();
 
         $pengaduans = Pengaduan::when($kategoriId, function ($query) use ($kategoriId) {
             $query->where('kategori_id', $kategoriId);
-        })->latest()->paginate(10);
+        })
+            ->latest()
+            ->paginate(10);
 
-        return view('pengaduan.index', compact('pengaduans', 'kategori', 'kategoriId'));
+        return view('pengaduan.index', compact(
+            'pengaduans',
+            'kategori',
+            'kategoriId'
+        ));
     }
+
 
     public function pending(Request $request)
     {
         $kategoriId = $request->get('kategori_id');
-        $kategori = Kategori::all();
+
+        $kategori = Kategori::whereNull('deleted_at')->get();
 
         $pengaduans = Pengaduan::where('status', 'pending')
             ->when($kategoriId, function ($query) use ($kategoriId) {
@@ -36,13 +47,19 @@ class PengaduanController extends Controller
             ->latest()
             ->paginate(10);
 
-        return view('pengaduan.pending', compact('pengaduans', 'kategori', 'kategoriId'));
+        return view('pengaduan.pending', compact(
+            'pengaduans',
+            'kategori',
+            'kategoriId'
+        ));
     }
+
 
     public function selesaiList(Request $request)
     {
         $kategoriId = $request->get('kategori_id');
-        $kategori = Kategori::all();
+
+        $kategori = Kategori::whereNull('deleted_at')->get();
 
         $pengaduans = Pengaduan::where('status', 'selesai')
             ->when($kategoriId, function ($query) use ($kategoriId) {
@@ -51,13 +68,24 @@ class PengaduanController extends Controller
             ->latest()
             ->paginate(10);
 
-        return view('pengaduan.selesai', compact('pengaduans', 'kategori', 'kategoriId'));
+        return view('pengaduan.selesai', compact(
+            'pengaduans',
+            'kategori',
+            'kategoriId'
+        ));
     }
+
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nama'        => 'required|string|max:255',
+
+            'nama' => [
+                'required',
+                'string',
+                'max:255'
+            ],
+
             'email' => [
                 'required',
                 'email',
@@ -67,18 +95,40 @@ class PengaduanController extends Controller
                     }
                 }
             ],
-            'whatsapp'    => 'required|max:20',
-            'kategori_id' => 'required|exists:kategori,id',
-            'opd_id'      => 'required|exists:opds,id',
-            'keterangan'  => 'required|string',
+
+            'whatsapp' => [
+                'required',
+                'max:20'
+            ],
+
+            // hanya menerima kategori yang belum dihapus
+            'kategori_id' => [
+                'required',
+                Rule::exists('kategori', 'id')
+                    ->whereNull('deleted_at'),
+            ],
+
+            // hanya menerima opd yang belum dihapus
+            'opd_id' => [
+                'required',
+                Rule::exists('opds', 'id')
+                    ->whereNull('deleted_at'),
+            ],
+
+            'keterangan' => [
+                'required',
+                'string'
+            ],
         ]);
+
 
         $pengaduan = Pengaduan::create($validated);
 
-        // ambil relasi biar tampil nama
+
+        // ambil relasi
         $pengaduan->load('kategori', 'opd');
 
-        // format pesan
+
         $pesan = "Pengaduan TTE Baru\n\n"
             . "Nama: {$pengaduan->nama}\n"
             . "Email: {$pengaduan->email}\n"
@@ -87,63 +137,114 @@ class PengaduanController extends Controller
             . "OPD: {$pengaduan->opd->nama_opd}\n"
             . "Keterangan: {$pengaduan->keterangan}";
 
-        // encode biar aman di URL
+
         $pesanEncoded = urlencode($pesan);
 
-        // nomor tujuan
-        $nomor = DB::table('settings')->where('key', 'no_wa')->value('value');
 
-        // fallback kalau kosong (biar aman)
+        $nomor = DB::table('settings')
+            ->where('key', 'no_wa')
+            ->value('value');
+
+
         if (!$nomor) {
             $nomor = '6287899295936';
         }
 
-        // redirect ke WhatsApp
-        return redirect("https://wa.me/$nomor?text=$pesanEncoded");
+
+        return redirect(
+            "https://wa.me/$nomor?text=$pesanEncoded"
+        );
     }
+
 
     public function selesai($id)
     {
         $pengaduan = Pengaduan::findOrFail($id);
 
-        // update status dan tanggal selesai
+
         $pengaduan->update([
             'status' => 'selesai',
             'tanggal_selesai' => now()->format('Y-m-d H:i:s'),
         ]);
 
-        // kirim email
-        Mail::to($pengaduan->email)->send(new PengaduanSelesaiMail($pengaduan));
 
-        return redirect()->route('pengaduan.index')->with('success', 'Pengaduan berhasil ditandai selesai dan notifikasi dikirim.');
+        Mail::to($pengaduan->email)
+            ->send(new PengaduanSelesaiMail($pengaduan));
+
+
+        return redirect()
+            ->route('pengaduan.index')
+            ->with(
+                'success',
+                'Pengaduan berhasil ditandai selesai dan notifikasi dikirim.'
+            );
     }
+
 
     public function downloadRekap()
     {
-        $pengaduan = Pengaduan::with(['opd', 'kategori'])->get();
+        $pengaduan = Pengaduan::with([
+            'opd',
+            'kategori'
+        ])->get();
 
-        // Group by OPD
-        $rekapPerOpd = $pengaduan->groupBy('opd.nama_opd');
 
-        // Hitung total
+        $rekapPerOpd = $pengaduan->groupBy(
+            'opd.nama_opd'
+        );
+
+
         $total = $pengaduan->count();
-        $totalPending = $pengaduan->where('status', 'pending')->count();
-        $totalSelesai = $pengaduan->where('status', 'selesai')->count();
 
-        $pdf = PDF::loadView('laporan.pengaduan_rekap', compact('rekapPerOpd', 'total', 'totalPending', 'totalSelesai'))
+        $totalPending = $pengaduan
+            ->where('status', 'pending')
+            ->count();
+
+        $totalSelesai = $pengaduan
+            ->where('status', 'selesai')
+            ->count();
+
+
+        $pdf = PDF::loadView(
+            'laporan.pengaduan_rekap',
+            compact(
+                'rekapPerOpd',
+                'total',
+                'totalPending',
+                'totalSelesai'
+            )
+        )
             ->setPaper('A4', 'landscape');
 
-        return $pdf->download('Laporan_Rekap_Pengaduan_TTE.pdf');
+
+        return $pdf->download(
+            'Laporan_Rekap_Pengaduan_TTE.pdf'
+        );
     }
+
 
     public function downloadDetail()
     {
-        $pengaduan = Pengaduan::with(['opd', 'kategori'])->get();
-        $pengaduanPerOpd = $pengaduan->groupBy('opd_id');
+        $pengaduan = Pengaduan::with([
+            'opd',
+            'kategori'
+        ])->get();
 
-        $pdf = PDF::loadView('laporan.pengaduan_detail', compact('pengaduanPerOpd'))
+
+        $pengaduanPerOpd = $pengaduan->groupBy(
+            'opd_id'
+        );
+
+
+        $pdf = PDF::loadView(
+            'laporan.pengaduan_detail',
+            compact('pengaduanPerOpd')
+        )
             ->setPaper('A4', 'portrait');
 
-        return $pdf->download('Laporan_Detail_Pengaduan_TTE.pdf');
+
+        return $pdf->download(
+            'Laporan_Detail_Pengaduan_TTE.pdf'
+        );
     }
 }

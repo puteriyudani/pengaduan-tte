@@ -32,11 +32,11 @@ class Pengaduan extends Model
 
     public function kategori()
     {
-        return $this->belongsTo(Kategori::class, 'kategori_id');
+        return $this->belongsTo(Kategori::class)->withTrashed();
     }
 
     public function opd()
     {
-        return $this->belongsTo(OPD::class, 'opd_id');
+        return $this->belongsTo(OPD::class)->withTrashed();
     }
 }
