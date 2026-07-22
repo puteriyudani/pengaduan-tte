@@ -15,13 +15,22 @@ class SettingController extends Controller
 
     public function update(Request $request)
     {
-        foreach ($request->except('_token') as $key => $value) {
+        $validated = $request->validate([
+            'no_wa' => ['required', 'string', 'max:20'],
+        ]);
+
+        foreach ($validated as $key => $value) {
             DB::table('settings')->updateOrInsert(
                 ['key' => $key],
-                ['value' => $value, 'updated_at' => now()]
+                [
+                    'value' => $value,
+                    'updated_at' => now(),
+                ]
             );
         }
 
-        return redirect()->back()->with('success', 'Setting berhasil disimpan');
+        return redirect()
+            ->back()
+            ->with('success', 'Setting berhasil disimpan');
     }
 }
