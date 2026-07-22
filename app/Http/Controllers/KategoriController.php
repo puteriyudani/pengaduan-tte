@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\AuditLogger;
 use App\Models\Kategori;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -41,9 +42,15 @@ class KategoriController extends Controller
             ],
         ]);
 
-        Kategori::create([
+        $kategori = Kategori::create([
             'nama_kategori' => $request->nama_kategori,
         ]);
+
+        AuditLogger::log(
+            'CREATE',
+            'Kategori',
+            "Menambahkan kategori: {$kategori->nama_kategori}"
+        );
 
         return redirect()
             ->route('kategori.index')
@@ -78,9 +85,17 @@ class KategoriController extends Controller
             ],
         ]);
 
+        $namaLama = $kategori->nama_kategori;
+
         $kategori->update([
             'nama_kategori' => $request->nama_kategori,
         ]);
+
+        AuditLogger::log(
+            'UPDATE',
+            'Kategori',
+            "Mengubah kategori dari '{$namaLama}' menjadi '{$kategori->nama_kategori}'"
+        );
 
         return redirect()
             ->route('kategori.index')
@@ -104,6 +119,12 @@ class KategoriController extends Controller
                     "Kategori tidak dapat dihapus karena masih digunakan oleh {$jumlahPengaduan} data pengaduan. Pindahkan atau arsipkan data pengaduan terlebih dahulu."
                 );
         }
+
+        AuditLogger::log(
+            'DELETE',
+            'Kategori',
+            "Menghapus kategori: {$kategori->nama_kategori}"
+        );
 
         $kategori->delete();
 

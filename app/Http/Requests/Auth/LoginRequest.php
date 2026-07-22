@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Log;
 
 class LoginRequest extends FormRequest
 {
@@ -45,22 +46,37 @@ class LoginRequest extends FormRequest
         $user = \App\Models\User::where('email', $this->email)->first();
 
         if (! $user) {
+
+            Log::warning('Login gagal - email tidak ditemukan', [
+                'email' => $this->email,
+                'ip_address' => $this->ip(),
+            ]);
+
             RateLimiter::hit($this->throttleKey());
+
             throw ValidationException::withMessages([
                 'email' => __('Kredensial yang dimasukkan tidak valid.'),
             ]);
         }
 
         if (! Hash::check($this->password, $user->password)) {
+
+            Log::warning('Login gagal - password salah', [
+                'email' => $this->email,
+                'user_id' => $user->id,
+                'ip_address' => $this->ip(),
+            ]);
+
             RateLimiter::hit($this->throttleKey());
+
             throw ValidationException::withMessages([
                 'email' => __('Kredensial yang dimasukkan tidak valid.'),
             ]);
         }
 
-        \Illuminate\Support\Facades\Auth::login($user, $this->boolean('remember'));
+        Auth::login($user, $this->boolean('remember'));
 
-        \Illuminate\Support\Facades\RateLimiter::clear($this->throttleKey());
+        RateLimiter::clear($this->throttleKey());
     }
 
     /**

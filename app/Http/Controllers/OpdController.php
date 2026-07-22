@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\AuditLogger;
 use App\Models\OPD;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -43,9 +44,15 @@ class OpdController extends Controller
             ],
         ]);
 
-        OPD::create([
+        $opd = OPD::create([
             'nama_opd' => $request->nama_opd,
         ]);
+
+        AuditLogger::log(
+            'CREATE',
+            'OPD',
+            "Menambahkan OPD: {$opd->nama_opd}"
+        );
 
         return redirect()
             ->route('opd.index')
@@ -80,9 +87,17 @@ class OpdController extends Controller
             ],
         ]);
 
+        $namaLama = $opd->nama_opd;
+
         $opd->update([
             'nama_opd' => $request->nama_opd,
         ]);
+
+        AuditLogger::log(
+            'UPDATE',
+            'OPD',
+            "Mengubah OPD dari '{$namaLama}' menjadi '{$opd->nama_opd}'"
+        );
 
         return redirect()
             ->route('opd.index')
@@ -106,6 +121,12 @@ class OpdController extends Controller
                     "OPD tidak dapat dihapus karena masih digunakan oleh {$jumlahPengaduan} data pengaduan. Pindahkan atau arsipkan data pengaduan terlebih dahulu."
                 );
         }
+
+        AuditLogger::log(
+            'DELETE',
+            'OPD',
+            "Menghapus OPD: {$opd->nama_opd}"
+        );
 
         $opd->delete();
 
